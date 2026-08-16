@@ -1,0 +1,1736 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Twilight: 2000 Character Generator (4th Edition) | Xero Sum Games</title>
+<link rel="canonical" href="https://thetable.xerosumgames.com/twilight2000-generator">
+<meta name="description" content="Free Twilight: 2000 4th Edition character generator. Run the full life path term by term -- attributes, childhood, careers, promotions, ageing, the war roll and the At War term -- then print a character sheet. Runs in your browser, no signup.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Xero Sum Games">
+<meta property="og:title" content="Twilight: 2000 Character Generator (4th Edition)">
+<meta property="og:description" content="Free Twilight: 2000 4th Edition character generator. Run the full life path term by term -- attributes, childhood, careers, promotions, ageing, the war roll and the At War term -- then print a character sheet. Runs in your browser, no signup.">
+<meta property="og:url" content="https://thetable.xerosumgames.com/twilight2000-generator">
+<meta property="og:image" content="https://thetable.xerosumgames.com/gen-twilight2000-generator.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Twilight: 2000 Character Generator (4th Edition)">
+<meta name="twitter:description" content="Free Twilight: 2000 4th Edition character generator. Run the full life path term by term -- attributes, childhood, careers, promotions, ageing, the war roll and the At War term -- then print a character sheet. Runs in your browser, no signup.">
+<meta name="twitter:image" content="https://thetable.xerosumgames.com/gen-twilight2000-generator.jpg">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Twilight: 2000 Character Generator (4th Edition)","url":"https://thetable.xerosumgames.com/twilight2000-generator","applicationCategory":"GameApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free Twilight: 2000 4th Edition character generator. Run the full life path term by term -- attributes, childhood, careers, promotions, ageing, the war roll and the At War term -- then print a character sheet. Runs in your browser, no signup."}</script>
+
+<style>
+/* Twilight: 2000 generator -- palette + layout.
+   Uniform title bar spec shared with the other Xero Sum Games generators:
+   back-to-Table strip on top, LIGHT/DARK pill left, centred ~30px title,
+   solid RANDOMISE right, 3px accent underline.
+   The small uppercase monospace label family sits at 14px, matching the size
+   Xero set on the Traveller generator on 2026-08-16. */
+:root{
+  --void:#0e0e10; --panel:#e9e6db; --surface:#f6f4ec; --card:#dcd8c8; --card-ho:#d2cdba;
+  /* --dust is the secondary-text token (blurbs, option descriptions, notes) */
+  --ink:#16170f; --dim:#6f6d5c; --dust:#4f4e42; --steel:#3a3a30; --moon:#1a1a14;
+  --rust:#8f3d24; --amber:#a8761f; --line:#c2bda9; --accent:#4a5a35; --accent-dim:#c6ccb4;
+  --ff-d:Georgia,'Times New Roman',serif;
+  --ff-b:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --ff-m:'Courier New',Courier,monospace;
+  --r:3px; --tr:.15s ease;
+}
+:root[data-theme="dark"]{
+  --void:#000; --panel:#15160f; --surface:#1d1f16; --card:#25281c; --card-ho:#2e3123;
+  --ink:#eceadc; --dim:#7e7d6c; --dust:#b4b2a0; --steel:#cbc9b6; --moon:#eceadc;
+  --rust:#d4674a; --amber:#d9a441; --line:#353829; --accent:#8fa568; --accent-dim:#3f4a2c;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--panel);color:var(--ink);font-family:var(--ff-b);font-size:15px;line-height:1.5}
+
+.backbar{display:block;background:#0e0e10;color:#e8e5dd;font:600 14px var(--ff-b);text-decoration:none;padding:9px 14px;border-bottom:1px solid #2a2a30}
+.backbar:hover{color:#fff}
+
+.hdr{position:relative;background:var(--surface);border-bottom:3px solid var(--accent);padding:14px 18px;text-align:center}
+.hdr-title{margin:0;font-family:var(--ff-d);font-size:30px;font-weight:700;letter-spacing:.02em;color:var(--ink);pointer-events:none}
+.hdr-sub{font-family:var(--ff-m);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--dust);pointer-events:none;margin-top:2px}
+.theme-toggle{position:absolute;left:18px;top:50%;transform:translateY(-50%);display:inline-flex;border:1px solid var(--line);border-radius:20px;overflow:hidden;z-index:5}
+.tt-btn{background:transparent;border:0;color:var(--dust);font-family:var(--ff-m);font-size:14px;letter-spacing:.1em;padding:5px 12px;cursor:pointer}
+.tt-btn.active{background:var(--accent);color:#fff;font-weight:700}
+.hdr-rand{position:absolute;right:18px;top:50%;transform:translateY(-50%);background:var(--accent);border:0;border-radius:var(--r);color:#fff;font-family:var(--ff-m);font-size:14px;letter-spacing:.1em;text-transform:uppercase;padding:9px 16px;cursor:pointer;z-index:5}
+.hdr-rand:hover{background:var(--amber)}
+@media(max-width:720px){.theme-toggle,.hdr-rand{position:static;transform:none;display:inline-flex;margin:12px 6px 0}}
+
+.main{max-width:1000px;margin:0 auto;padding:20px 18px 60px}
+
+.track{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.track-item{font-family:var(--ff-m);font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding:5px 10px;border:1px solid var(--line);border-radius:var(--r)}
+.track-item.done{color:var(--dust);border-color:var(--accent-dim)}
+.track-item.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+
+.step-h{font-family:var(--ff-d);font-size:23px;margin:0 0 4px}
+.step-p{color:var(--dust);font-size:14px;margin:0 0 18px;max-width:70ch}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:16px}
+.panel-t{font-family:var(--ff-m);font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+
+/* attributes: four cards showing the letter grade and the die it rolls */
+.attrs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media(max-width:720px){.attrs{grid-template-columns:repeat(2,1fr)}}
+.at{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:10px 6px;text-align:center}
+.at-k{font-family:var(--ff-m);font-size:14px;letter-spacing:.1em;color:var(--dust)}
+.at-v{font-family:var(--ff-m);font-size:30px;font-weight:700;color:var(--ink);line-height:1.1}
+.at-d{font-family:var(--ff-m);font-size:12px;color:var(--amber)}
+.at-btns{display:flex;gap:4px;justify-content:center;margin-top:6px}
+.at-btn{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);color:var(--dust);font-family:var(--ff-m);font-size:14px;width:26px;height:24px;cursor:pointer;padding:0}
+.at-btn:hover:not(:disabled){border-color:var(--accent);color:var(--ink)}
+.at-btn:disabled{opacity:.3;cursor:not-allowed}
+.at-note{font-family:var(--ff-m);font-size:14px;color:var(--accent);text-align:center;margin-top:10px}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:720px){.grid2{grid-template-columns:1fr}}
+
+.opt{display:flex;gap:9px;align-items:flex-start;padding:8px 10px;border:1px solid transparent;border-radius:var(--r);cursor:pointer}
+.opt:hover{background:var(--card)}
+.opt.on{background:var(--card);border-color:var(--accent-dim)}
+.opt.disabled{opacity:.45;cursor:not-allowed}
+.opt-box{width:16px;height:16px;border:1px solid var(--line);border-radius:2px;flex:0 0 auto;margin-top:3px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff}
+.opt.on .opt-box{background:var(--accent);border-color:var(--accent)}
+.opt-n{font-size:14px}
+.opt-d{font-size:12px;color:var(--dust);line-height:1.35}
+.opt-x{font-family:var(--ff-m);font-size:12px;color:var(--rust)}
+
+.txt,.sel{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);color:var(--ink);font-family:var(--ff-b);font-size:14px;padding:8px 10px;outline:none}
+.txt:focus,.sel:focus{border-color:var(--accent)}
+.lbl{display:block;font-family:var(--ff-m);font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--dust);margin:0 0 5px}
+
+.btn{background:var(--accent);border:0;border-radius:var(--r);color:#fff;font-family:var(--ff-m);font-size:14px;letter-spacing:.12em;text-transform:uppercase;padding:11px 22px;cursor:pointer}
+.btn:hover:not(:disabled){background:var(--amber)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--dust)}
+.btn.ghost:hover{border-color:var(--accent);color:var(--ink)}
+.btn-rand{margin-top:8px;padding:7px 14px;font-size:14px}
+.btn-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:22px}
+/* a control that belongs to the panel above it, not to the end of the step */
+.btn-row.tight{justify-content:flex-end;margin:10px 0 16px}
+
+/* term loop reporting */
+.roll{display:flex;align-items:baseline;gap:10px;font-family:var(--ff-m);font-size:13px;padding:8px 11px;border-left:3px solid var(--line);background:var(--card);border-radius:0 var(--r) var(--r) 0;margin-bottom:8px}
+.roll.good{border-left-color:#4f7d3f}
+.roll.bad{border-left-color:var(--rust)}
+.roll-v{font-size:17px;font-weight:700}
+.roll-t{color:var(--dust);flex:1}
+.dice{display:inline-flex;gap:5px;margin-left:4px}
+.die{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;border:1px solid var(--line);border-radius:var(--r);font-family:var(--ff-m);font-size:13px;font-weight:700;background:var(--surface)}
+.die.hit{background:var(--accent);border-color:var(--accent);color:#fff}
+.term-hd{display:flex;align-items:baseline;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding-bottom:7px;margin-bottom:11px}
+.term-n{font-family:var(--ff-d);font-size:19px}
+.term-age{font-family:var(--ff-m);font-size:12px;color:var(--dust)}
+.hist{margin-bottom:16px}
+.hist-row{display:flex;gap:10px;font-size:13px;padding:6px 0;border-bottom:1px solid var(--line)}
+.hist-t{font-family:var(--ff-m);color:var(--dust);flex:0 0 62px}
+.hist-c{flex:1}
+.hist-r{font-family:var(--ff-m);color:var(--dust);font-size:12px}
+
+.skills-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:4px 14px}
+.sk{display:flex;justify-content:space-between;gap:8px;font-size:13px;padding:3px 0;border-bottom:1px dotted var(--line)}
+.sk-v{font-family:var(--ff-m);color:var(--amber);font-weight:700}
+.spec-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:4px 14px}
+
+.note{font-size:12px;color:var(--dust);line-height:1.45;background:var(--card);border-left:3px solid var(--accent-dim);padding:8px 11px;border-radius:0 var(--r) var(--r) 0;margin:10px 0}
+.note.warn{border-left-color:var(--rust)}
+
+/* ---- printed sheet: a CSS recreation, no publisher artwork ---- */
+#printsheet{display:none}
+.ps{width:8.5in;min-height:11in;background:#fff;color:#000;padding:.4in;font-family:Arial,Helvetica,sans-serif;font-size:9.5pt}
+.ps-band{background:#000;color:#fff;font-weight:700;letter-spacing:.08em;font-size:9pt;padding:3px 7px;text-transform:uppercase}
+.ps-box{border:1.5px solid #000;padding:8px 10px;margin-bottom:8px}
+.ps-top{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px}
+.ps-title{font-family:Georgia,serif;font-size:24pt;font-weight:700;letter-spacing:-.01em;flex:1}
+.ps-sub{font-size:7.5pt;letter-spacing:.24em;text-align:right}
+.ps-2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ps-f{display:flex;gap:6px;align-items:baseline;padding:2px 0}
+.ps-fl{font-weight:700;font-size:8pt;min-width:86px}
+.ps-fv{flex:1;border-bottom:1px solid #999;min-height:14px}
+.ps-at{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;text-align:center}
+.ps-at div.k{font-weight:700;font-size:8pt;border-bottom:1px solid #000}
+.ps-at div.v{font-size:15pt;font-weight:700;padding:2px 0}
+.ps-at div.d{font-size:7.5pt;color:#444}
+.ps-sk{columns:3;column-gap:14px;font-size:8pt}
+.ps-sk div{break-inside:avoid;display:flex;justify-content:space-between;border-bottom:1px dotted #bbb;padding:1px 0}
+.ps-sp{columns:3;column-gap:14px;font-size:8pt}
+.ps-sp div{break-inside:avoid;padding:1px 0}
+.ps-hist{font-size:8pt;width:100%;border-collapse:collapse}
+.ps-hist th,.ps-hist td{border-bottom:1px solid #ccc;text-align:left;padding:2px 4px}
+.ps-hist th{border-bottom:1.5px solid #000;font-size:7.5pt;text-transform:uppercase;letter-spacing:.06em}
+.ps-gear{columns:2;column-gap:16px;font-size:8pt}
+.ps-gear div{break-inside:avoid;padding:1px 0}
+.ps-foot{font-size:7pt;color:#333;font-style:italic;text-align:center;margin-top:10px}
+
+@media print{
+  @page{size:letter;margin:0}
+  html,body{background:#fff}
+  .hdr,.track,.footer,.backbar,.no-print,#xsg-ri-open,#xsg-ri-modal{display:none!important}
+  /* #printsheet is a child of #main, so hide #main's OTHER children rather than #main
+     itself -- display:block on a descendant of a display:none parent prints nothing. */
+  #main>*:not(#printsheet){display:none!important}
+  .main{max-width:none;margin:0;padding:0}
+  #printsheet{display:block!important}
+  /* Tightened so a full life path plus the footer lands on ONE page -- at the screen
+     paddings the disclaimer alone spilled onto a second sheet. */
+  .ps{width:auto;min-height:0;padding:.3in}
+  .ps-box{padding:6px 9px;margin-bottom:6px}
+  .ps-band{font-size:8.5pt;padding:2px 7px}
+  .ps-top{margin-bottom:6px}
+  .ps-title{font-size:22pt}
+  .ps-foot{margin-top:5px;font-size:6.5pt}
+  .ps-sk,.ps-sp,.ps-gear{font-size:7.5pt}
+  .ps-hist{font-size:7.5pt}
+  .ps-hist th,.ps-hist td{padding:1px 4px}
+  .ps-f{padding:1px 0}
+  .ps-at div.v{font-size:14pt;padding:1px 0}
+}
+
+</style>
+<script>/* apply saved theme before paint to avoid a flash */(function(){try{if(localStorage.getItem('twilight2000_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
+</head><body>
+<a class="backbar no-print" href="https://thetable.xerosumgames.com/">&larr; The Table</a>
+<div class="hdr">
+  <div class="theme-toggle" role="group" aria-label="Colour theme">
+    <button class="tt-btn" data-tv="light" onclick="setTheme('light')">Light</button>
+    <button class="tt-btn" data-tv="dark" onclick="setTheme('dark')">Dark</button>
+  </div>
+  <h1 class="hdr-title">Twilight: 2000</h1>
+  <div class="hdr-sub">Character Generator &middot; 4th Edition Life Path</div>
+  <button class="hdr-rand no-print" type="button" onclick="A.randomise()">&#9860; Randomise</button>
+</div>
+<div class="main">
+  <div class="track" id="track"></div>
+  <div id="main"></div>
+</div>
+<div class="footer no-print" style="text-align:center;padding:26px 16px;font-size:12px;color:#8d897c;line-height:1.6">
+  <p class="seo-intro">A free, browser-based character generator for Twilight: 2000 4th Edition. It runs the complete life path: attributes over a baseline of C, childhood, military and civilian career terms with skill increases, promotion rolls, specialties, ageing and the war roll, then the At War term, hit and stress capacity, and starting gear.</p>
+
+  <b>Twilight: 2000 -- Character Generator.</b> An unofficial fan tool.<br>
+  Twilight: 2000 is a trade mark of Free League Publishing. This is an unofficial, fan-made character
+  generator, not affiliated with or endorsed by the rights holders.
+  All game rules and content remain the property of their respective owners.
+</div>
+<script>var DATA={"core":{"_source":"Twilight: 2000 4th Edition, Player's Manual -- character generation extract (T2k_Players_Manual_220804_Char-Gen.pdf). PDF page = printed page - 13.","_scope":"Rules mechanics only (tables, target numbers, procedure), transcribed to run a character generator. No rulebook prose is reproduced beyond the short table entries needed to make a roll.","_transcribed":"2026-08-16","_method":"LIFE PATH (printed p31). The archetype method (printed p20-30) is NOT implemented.","attributes":{"order":["STR","AGL","INT","EMP"],"names":{"STR":"Strength","AGL":"Agility","INT":"Intelligence","EMP":"Empathy"},"descriptions":{"STR":"Muscle power, toughness, and physical endurance","AGL":"Body control, speed, and fine motor skills","INT":"Perception, intellect, and mental stability","EMP":"Charisma, amiability, and emotional stability"},"baseline":"C","increases":"2D3","max":"A","min":"D","trade_down":"You may gain one extra increase by decreasing one attribute from C to D.","scale":[{"level":"A","die":"D12","size":12,"desc":"Extraordinary"},{"level":"B","die":"D10","size":10,"desc":"Capable"},{"level":"C","die":"D8","size":8,"desc":"Average"},{"level":"D","die":"D6","size":6,"desc":"Feeble"}]},"skill_scale":[{"level":"A","die":"D12","size":12,"desc":"Elite"},{"level":"B","die":"D10","size":10,"desc":"Veteran"},{"level":"C","die":"D8","size":8,"desc":"Experienced"},{"level":"D","die":"D6","size":6,"desc":"Novice"},{"level":"F","die":"None","size":0,"desc":"Untrained"}],"_skill_note":"F is the default and is not written on the sheet. A skill taken for the first time starts at D. No skill can ever go above A.","cuf":{"start":"D","max":"A","_note":"Coolness Under Fire, rated A-D like an attribute. Increases one step on a promotion in a military OR intelligence career."},"derived":{"hit_capacity":"(STR die size + AGL die size) / 4, rounded up","stress_capacity":"(INT die size + EMP die size) / 4, rounded up","_example":"STR B and AGL C give hit capacity 5 (rounded up from 4.5). INT B and EMP D give stress capacity 4."},"unit_morale":{"rule":"The group's starting unit morale equals the highest COMMAND skill level in the group.","_note":"A group score, not a personal one. Solo output shows this character's own COMMAND as their contribution."},"term":{"length":"D6 years","starting_age":18,"skill_increases_per_term":"Increase two skills one step each, or one skill two steps.","skill_sources":"The skills listed for the career this term, OR the generally available skills STAMINA, MOBILITY and DRIVING.","first_military_term":"In your FIRST term of military service one of your skill increases MUST be RANGED COMBAT, no matter what skills are listed.","nco_command":"At the rank of Corporal or above you can always choose COMMAND as a skill increase.","promotion":{"check":"One unmodified skill roll using one of the skills you increased this term. The roll cannot be pushed.","on_success":"Roll D6 on the career's specialty table to learn a specialty. If you roll one you already have, choose any specialty instead. In a military career also increase military rank one step. In a military OR intelligence career also increase CUF one step, to a maximum of A."},"ageing":{"roll":"D8","effect":"If the D8 result is LOWER than the number of terms completed, reduce one attribute of your choice by one step. Cannot go below D.","_note":"This means an attribute reduction can never happen directly after the first term."},"war":{"roll":"D8","effect":"If the D8 result is LOWER than the number of terms completed, war breaks out -- go to the At War term. Otherwise choose a career for the next term."}},"at_war":{"skills":"Increase any two skills of your choice by one step each. You cannot increase one skill two steps.","specialty":"Roll D6 on the At War table using the column for your most recent career term. Re-roll (or choose) if you already have it.","no_promotion":"Do NOT roll for promotion or age effects after the At War term.","draft":{"when":"Your final term before war broke out was civilian (EXCEPT intelligence careers) AND your character is not a local of the country where the game is set.","effect":"Your At War term is spent as a draftee or volunteer. One of the two At War skill increases must be RANGED COMBAT unless you already have D or better in it. Roll your specialty on the MILITARY column, and take starting gear as if your final pre-war term had been Combat Arms."},"table":{"columns":["Military","Blue Collar","White Collar","Other"],"rows":[{"d6":1,"Military":"Brawler","Blue Collar":"Brawler","White Collar":"Scout","Other":"Racer"},{"d6":2,"Military":"Ranger","Blue Collar":"Rider","White Collar":"Fisher","Other":"Hunter"},{"d6":3,"Military":"NBC","Blue Collar":"Runner","White Collar":"Forager","Other":"Forager"},{"d6":4,"Military":"Rifleman","Blue Collar":"Quartermaster","White Collar":"Scrounger","Other":"Quartermaster"},{"d6":5,"Military":"Scrounger","Blue Collar":"Gunsmith","White Collar":"Frontline Leader","Other":"Scrounger"},{"d6":6,"Military":"Improvised Munitions","Blue Collar":"Mechanic","White Collar":"Interrogator","Other":"Improvised Munitions"}]}},"final_steps":{"gear":"Pick gear from the choices given by your final career term BEFORE the At War term. In addition you get D6 rations of food, D6 rations of fresh water and D6 rounds of ammo to use as currency. You are also assumed to have a uniform or sturdy civilian clothing and a canteen.","group_gear":"Chosen by the group together, possibly including a vehicle (printed p18). Not granted here -- it is a table decision.","rads":"Roll D6 for starting permanent rads (printed p80)."},"nationality":{"_rule":"Nationality does not affect character generation beyond gear and language (printed p15).","options":["United States","Soviet Union","Poland","Sweden","Other / local"],"languages":"Every character knows their native language. All PCs know at least a little English, and everyone from a former Warsaw Pact country knows a little Russian. Further languages are the Linguist specialty.","local_militia":{"_source":"printed p35","rule":"For local militia, war automatically breaks out by the end of their FIRST term -- one term on the military table, plus the benefits of the At War career.","also":"Local militia always know the area, have multiple contacts there, have a home there, and speak the local language fluently."}},"ranks":{"_source":"printed p15. A dash means that armed force has no equivalent rank.","columns":["US","Soviet","Polish","Swedish"],"ladder":[{"US":"Private","Soviet":"Ryadovoy","Polish":"Szeregowy","Swedish":"Menig"},{"US":"Private First Class","Soviet":"--","Polish":"Starszy szeregowy","Swedish":"--"},{"US":"Corporal / Specialist","Soviet":"Efreitor","Polish":"Kapral","Swedish":"Korpral"},{"US":"Sergeant","Soviet":"Mladshiy Serzhant","Polish":"Starszy kapral / Plutonowy","Swedish":"Furir"},{"US":"Staff Sergeant","Soviet":"Serzhant","Polish":"Sier\u017cant","Swedish":"Sergeant"},{"US":"Sergeant First Class","Soviet":"Starshiy Serzhant","Polish":"Starszy sier\u017cant","Swedish":"--"},{"US":"Master Sergeant","Soviet":"--","Polish":"M\u0142odszy chor\u0105\u017cy","Swedish":"--"},{"US":"First Sergeant","Soviet":"Starshina","Polish":"Chor\u0105\u017cy","Swedish":"--"},{"US":"Sergeant Major","Soviet":"--","Polish":"Starszy chor\u0105\u017cy","Swedish":"--"},{"US":"Second Lieutenant","Soviet":"Mladshiy Leytenant","Polish":"Podporucznik","Swedish":"F\u00e4nrik"},{"US":"First Lieutenant","Soviet":"Starshiy Leytenant","Polish":"Porucznik","Swedish":"L\u00f6jtnant"},{"US":"Captain","Soviet":"Kapitan","Polish":"Kapitan","Swedish":"Kapten"},{"US":"Major","Soviet":"Mayor","Polish":"Major","Swedish":"Major"},{"US":"Lieutenant Colonel","Soviet":"Podpolkovnik","Polish":"Podpulkownik","Swedish":"\u00d6verstel\u00f6jtnant"},{"US":"Colonel","Soviet":"Polkovnik","Polish":"Pulkownik","Swedish":"\u00d6verste"},{"US":"Brigadier General","Soviet":"General-mayor","Polish":"General brygady","Swedish":"Brigadgeneral"},{"US":"Major General","Soviet":"General-leytenant","Polish":"General dywizji","Swedish":"Generalmajor"},{"US":"Lieutenant General","Soviet":"General-polkovnik","Polish":"General broni","Swedish":"Generall\u00f6jtnant"},{"US":"General","Soviet":"General-armee","Polish":"General","Swedish":"General"}]},"childhood":{"_source":"printed p32. Roll D6, or choose if the Referee allows. Take ONE listed skill at level D, then roll D6 for one specialty.","table":[{"d6":1,"name":"Street Kid","skills":["Close Combat","Mobility","Recon"],"specialties":["Brawler","Melee","Runner","Infiltrator","Scrounger","Locksmith"]},{"d6":2,"name":"Small Town","skills":["Driving","Ranged Combat","Survival"],"specialties":["Biker","Racer","Sniper","Farmer","Hunter","Quartermaster"]},{"d6":3,"name":"Working Class","skills":["Close Combat","Stamina","Tech"],"specialties":["Brawler","Builder","Load Carrier","Scrounger","Blacksmith","Mechanic"]},{"d6":4,"name":"Intellectual","skills":["Tech","Medical Aid","Persuasion"],"specialties":["Historian","Communications","Computers","Scientist","Linguist","Musician"]},{"d6":5,"name":"Military Family","skills":["Stamina","Mobility","Ranged Combat"],"specialties":["Brawler","Martial Artist","Ranger","Mountaineer","Runner","Rifleman"]},{"d6":6,"name":"Affluence","skills":["Mobility","Command","Persuasion"],"specialties":["Boatman","Rider","Runner","Linguist","Musician","Trader"]}]},"moral_code_examples":["You have a moral obligation to help those worse off than you.","War is a glorious thing and you are meant to command.","Freedom is everything. No one tells you what to do. Ever."],"big_dream_examples":["You were sent here to win this war. You intend to do just that, at any cost.","Find a place to settle down with your friends, and defend it with your life.","Find your parents. You were separated. You want them back."]},"skills":{"_source":"Twilight: 2000 4E Player's Manual, printed p48-51 (pdf 35-38).","_note":"Twelve core skills. Specialties are categorised by the skill they are most commonly used with, but you do NOT need a level in that skill to hold the specialty.","skills":[{"name":"Close Combat","attr":"STR","desc":"Fighting an enemy up close, with or without a melee weapon."},{"name":"Heavy Weapons","attr":"STR","desc":"Machine guns, rocket launchers, mortars, tank guns and howitzers. Mounted weapons use AGL; artillery uses INT."},{"name":"Stamina","attr":"STR","desc":"Physical toughness and endurance -- marching hard, resisting disease or cold, clinging to life."},{"name":"Driving","attr":"AGL","desc":"Motorcycles, cars, APCs and tanks."},{"name":"Mobility","attr":"AGL","desc":"Jumping, climbing, running fast, thrown weapons."},{"name":"Ranged Combat","attr":"AGL","desc":"Hand-held ranged weapons -- pistols, bows, submachineguns, assault rifles."},{"name":"Recon","attr":"INT","desc":"Spotting concealed enemies, avoiding ambushes, moving silently."},{"name":"Survival","attr":"INT","desc":"Finding food and shelter in the wild."},{"name":"Tech","attr":"INT","desc":"Repairing gear, scavenging parts, crafting with a workshop."},{"name":"Command","attr":"EMP","desc":"Leading survivors, getting someone incapacitated by stress back on their feet. Sets unit morale."},{"name":"Medical Aid","attr":"EMP","desc":"Helping the injured back up and saving the life of a fallen comrade."},{"name":"Persuasion","attr":"EMP","desc":"Charm, threats or reason -- making others see things your way."}],"generally_available":["Stamina","Mobility","Driving"],"_generally_available_note":"printed p31 step 6 -- these three may always be chosen for a term's skill increases, whatever the career lists.","specialties":{"Close Combat":[{"name":"Brawler","desc":"+1 to CLOSE COMBAT in unarmed close combat."},{"name":"Melee","desc":"+1 to CLOSE COMBAT with hand-to-hand weapons -- knives, bayonets, clubs."},{"name":"Killer","desc":"You can kill an incapacitated person outright with no negative effects."},{"name":"Martial Artist","desc":"Your unarmed attacks have a crit threshold of 3 instead of 4."}],"Heavy Weapons":[{"name":"Machinegunner","desc":"+1 to HEAVY WEAPONS firing machine guns."},{"name":"Launcher Crew","desc":"+1 to HEAVY WEAPONS firing grenade and missile launchers."},{"name":"Redleg","desc":"+1 to HEAVY WEAPONS firing mortars and howitzers."},{"name":"Vehicle Gunner","desc":"+1 to HEAVY WEAPONS firing vehicle-mounted cannons."}],"Stamina":[{"name":"Builder","desc":"+1 to STAMINA for base building."},{"name":"Load Carrier","desc":"Carry four more encumbrance units in combat gear and four more in your backpack."},{"name":"NBC","desc":"+1 to STAMINA for all infection rolls, including radiation and chemical agents. Identifies NBC effects."},{"name":"Ranger","desc":"+1 to STAMINA for marching, resisting hypothermia and other hardships."},{"name":"SERE Training","desc":"+1 to STAMINA to resist interrogation, Psy Ops, bluffing and torture."}],"Driving":[{"name":"Biker","desc":"+1 to DRIVING motorcycles and bicycles, on or off-road."},{"name":"Boatman","desc":"+1 to DRIVING boats, including sail and rowed boats."},{"name":"Pilot","desc":"+1 to DRIVING fixed- and rotary-wing aircraft."},{"name":"Racer","desc":"+1 to DRIVING wheeled vehicles except motorcycles."},{"name":"Tanker","desc":"+1 to DRIVING tracked vehicles."}],"Mobility":[{"name":"Diver","desc":"+1 to MOBILITY when swimming, including SCUBA."},{"name":"Mountaineer","desc":"+1 to MOBILITY for rappelling, ascender-climbing and knot-tying."},{"name":"Paratrooper","desc":"+1 to MOBILITY for skydiving and for reducing falling damage."},{"name":"Pitcher","desc":"+1 to MOBILITY for thrown weapons, including knives and grenades."},{"name":"Rider","desc":"+1 to MOBILITY riding, and negates the penalty for shooting from horseback."},{"name":"Runner","desc":"+1 to MOBILITY for running."}],"Ranged Combat":[{"name":"Archer","desc":"+1 to RANGED COMBAT with bows and crossbows."},{"name":"Reloader","desc":"+1 to RANGED COMBAT rolls made to reload your firearm."},{"name":"Rifleman","desc":"+1 to RANGED COMBAT with assault rifles, carbines, submachine guns and shotguns."},{"name":"Sidearms","desc":"+1 to RANGED COMBAT with revolvers and pistols."},{"name":"Sniper","desc":"+1 to RANGED COMBAT with sniper rifles and hunting rifles."}],"Recon":[{"name":"Combat Awareness","desc":"Draw two initiative cards instead of one and choose which to act on."},{"name":"Forward Observer","desc":"Your RECON counts as one step higher when directing indirect fire."},{"name":"Historian","desc":"Roll RECON at a new location to learn something significant that happened there."},{"name":"Infiltrator","desc":"+1 to RECON when trying to remain undetected."},{"name":"Intelligence","desc":"Roll RECON on spotting enemy troops and gear to learn their stats."},{"name":"Investigator","desc":"Roll RECON when investigating a crime or battle scene for useful information."},{"name":"Scout","desc":"+1 to RECON for spotting others and avoiding ambushes."}],"Survival":[{"name":"Cook","desc":"One extra ration of food when anyone in the group successfully forages, hunts or fishes."},{"name":"Farmer","desc":"+1 to SURVIVAL for farming."},{"name":"Fisher","desc":"+1 to SURVIVAL for fishing."},{"name":"Forager","desc":"+1 to SURVIVAL for foraging to find food."},{"name":"Navigator","desc":"+1 to SURVIVAL for navigation."},{"name":"Hunter","desc":"+1 to SURVIVAL for hunting to obtain food."},{"name":"Quartermaster","desc":"+1 to SURVIVAL for making camp and establishing a home base."},{"name":"Scrounger","desc":"+1 to SURVIVAL for scrounging."}],"Tech":[{"name":"Blacksmith","desc":"+1 to TECH for metalworking, forging, casting, molding and smelting."},{"name":"Chemist","desc":"+1 to TECH for distilling grain alcohol for fuel. Identifies chemical substances."},{"name":"Combat Engineer","desc":"+1 to TECH for placing and disarming mines and explosives, and to RECON to avoid mines."},{"name":"Communications","desc":"+1 to TECH for radios, signal boosting, Morse, antennae and encryption gear."},{"name":"Computers","desc":"+1 to TECH for using or tampering with computers."},{"name":"Electrician","desc":"+1 to TECH for wiring, soldering, disabling and repairing electrical devices."},{"name":"Gunsmith","desc":"+1 to TECH for repairing firearms."},{"name":"Improvised Munitions","desc":"+1 to TECH for making zip-guns and IEDs."},{"name":"Locksmith","desc":"+1 to TECH for picking locks, cracking safes and disarming alarms."},{"name":"Mechanic","desc":"+1 to TECH for repairing engines, vehicles, generators and pumps."},{"name":"Scientist","desc":"Roll TECH on a phenomenon needing natural science knowledge for useful information."}],"Command":[{"name":"Frontline Leader","desc":"+1 to COMMAND for helping someone incapacitated by stress. Does not affect unit morale."},{"name":"Logistician","desc":"When base building you can roll COMMAND instead of any listed skill, with help."},{"name":"Tactician","desc":"Roll COMMAND on spotting an enemy force to learn their organization and objectives."}],"Medical Aid":[{"name":"Combat Medic","desc":"+1 to MEDICAL AID for getting an incapacitated character back up. No effect on critical injuries."},{"name":"Counselor","desc":"+1 to MEDICAL AID for counseling long-term mental trauma."},{"name":"Field Surgeon","desc":"+1 to MEDICAL AID for treating critical injuries."},{"name":"General Practitioner","desc":"+1 to MEDICAL AID for treating disease, poison and NBC."},{"name":"Veterinarian","desc":"+1 to MEDICAL AID for working on animals."}],"Persuasion":[{"name":"Linguist","desc":"You know another language well enough to pass as native on a successful PERSUASION roll."},{"name":"Musician","desc":"+1 to PERSUASION where singing or playing an instrument helps."},{"name":"Interrogator","desc":"+1 to PERSUASION for extracting information from a prisoner."},{"name":"Psy Ops","desc":"+1 to PERSUASION for changing someone's mind about an issue."},{"name":"Teacher","desc":"+1 to PERSUASION for teaching someone a specialty."},{"name":"Trader","desc":"+1 to PERSUASION when negotiating the price of an item."}]},"_unlisted_specialties":["Communication (Sciences career, printed p38) is spelled without the final S there, while the Tech specialty list (printed p51) prints Communications. Kept AS PRINTED in each place."]},"military":{"_source":"Twilight: 2000 4E Player's Manual, printed p32-33 (pdf 19-20).","key":"military","name":"Military","type":"military","blurb":"Five broad functional areas, shared across every nation's armed forces.","_notes":["OFFICERS must qualify for BOTH the Officer career path and the functional area they want to serve in. They also choose which of the two columns to use for each career bonus.","FIRST TERM: in your first term of military service one of your two skill increases must be RANGED COMBAT, no matter what skills are listed.","At the rank of Corporal or above you can always choose COMMAND as a skill increase."],"careers":[{"key":"combat_arms","name":"Combat Arms","requirements":{"text":"STR or AGL B+","any":[{"attr":"STR","min":"B"},{"attr":"AGL","min":"B"}]},"starting_rank":"Private","skills":["Close Combat","Heavy Weapons","Ranged Combat","Recon"],"specialties":["Rifleman","Redleg","Tanker","Machinegunner","Launcher Crew","Combat Engineer"],"gear":["Assault rifle, LMG or ATRL","D6 reloads","Flak jacket and helmet","Knife or D6 hand grenades","Personal medkit","Backpack"]},{"key":"combat_support","name":"Combat Support","requirements":{"text":"INT B+","all":[{"attr":"INT","min":"B"}]},"starting_rank":"Private First Class","skills":["Recon","Survival","Tech"],"specialties":["Intelligence","Linguist","Communications","NBC","Psy Ops","Interrogator"],"gear":["Assault rifle","D6 reloads","Flak jacket and helmet","Knife or D6 hand grenades","Personal medkits","MOPP suit or manpack radio","Backpack"]},{"key":"combat_service_support","name":"Combat Service Support","requirements":{"text":"None"},"starting_rank":"Private First Class","skills":["Medical Aid","Tech"],"specialties":["Mechanic","Gunsmith","Electrician","Computers","Combat Medic","Field Surgeon"],"gear":["Assault rifle","D6 reloads","Flak jacket and helmet","Knife or D6 hand grenades","Personal medkit","Basic tools","Vehicle tools or weapon tools or surgical instruments","Backpack"]},{"key":"special_operations","name":"Special Operations","requirements":{"text":"STR and AGL B+, INT C+, at least one term in Combat Arms","all":[{"attr":"STR","min":"B"},{"attr":"AGL","min":"B"},{"attr":"INT","min":"C"}],"terms_in":{"career":"combat_arms","min":1}},"starting_rank":"Sergeant","skills":["Close Combat","Ranged Combat","Recon","Survival"],"specialties":["Paratrooper","Ranger","Infiltrator","Combat Awareness","Sniper","SERE Training"],"gear":["Assault rifle or sniper rifle","Any pistol or D6 hand grenades or rifle-mounted grenade launcher","D6 reloads for each weapon","Binoculars or night vision goggles","Flak jacket and helmet","Knife","Personal medkit","Backpack"]},{"key":"officer","name":"Officer","requirements":{"text":"INT B+, no D attribute, at least one term in Education, requirements for the functional area","all":[{"attr":"INT","min":"B"}],"no_d_attribute":true,"terms_in":{"group":"education","min":1},"_also":"Must also meet the requirements of the functional area served in."},"starting_rank":"Second Lieutenant","skills":["Ranged Combat","Command","Persuasion"],"specialties":["Sidearms","Intelligence","Tactician","Logistician","Frontline Leader","Quartermaster"],"gear":["Pistol or submachine gun","D6 reloads","Manpack radio or night vision goggles","Flak jacket","Knife or D6 hand grenades","Personal medkit"]}]},"civilian":{"_source":"Twilight: 2000 4E Player's Manual, printed p36-38 (pdf 23-25).","_note":"Civilian careers are police, crime, intelligence services, blue collar work, education and white-collar work (printed p35). Civilian careers have no military rank and no CUF gain -- EXCEPT intelligence careers, which do increase CUF on a promotion (printed p31 step 7).","groups":[{"key":"police","name":"Police","type":"civilian","blurb":"Peacekeepers slid into paramilitary support as the war brought civilization to its knees.","careers":[{"key":"police_officer","name":"Police Officer","requirements":{"text":"No D attribute, no terms in prison","no_d_attribute":true,"forbid_terms_in":{"career":"prisoner"}},"skills":["Close Combat","Ranged Combat"],"specialties":["Sidearms","Melee","Runner","Racer","Biker","Scout"],"gear":["Pistol","D6 reloads","Handcuffs","Baton (club)","Patrol car with half a tank of gasoline"]},{"key":"detective","name":"Detective","requirements":{"text":"EMP B+, at least one term as Police Officer","all":[{"attr":"EMP","min":"B"}],"terms_in":{"career":"police_officer","min":1}},"skills":["Ranged Combat","Recon","Persuasion"],"specialties":["Infiltrator","Interrogator","Intelligence","Investigator","Locksmith","Linguist"],"gear":["Pistol","D6 reloads","Lockpicks"]},{"key":"swat","name":"SWAT","requirements":{"text":"STR and AGL B+, at least one term as Police Officer","all":[{"attr":"STR","min":"B"},{"attr":"AGL","min":"B"}],"terms_in":{"career":"police_officer","min":1}},"skills":["Close Combat","Ranged Combat","Recon"],"specialties":["Martial Artist","Rifleman","Sniper","Combat Awareness","Infiltrator","Scout"],"gear":["Assault rifle or submachinegun","D6 reloads","Night vision goggles","Flak jacket and helmet","Knife","Personal medkit"]}]},{"key":"crime","name":"Crime","type":"civilian","blurb":"Not an ideal career, but with civilization in rapid decline some see it as the only option.","_prison_rule":"After a term in a career of crime, if war does NOT break out, roll a D6 -- on an odd result you must spend the next term in prison.","careers":[{"key":"gang_member","name":"Gang Member","requirements":{"text":"STR and AGL C+","all":[{"attr":"STR","min":"C"},{"attr":"AGL","min":"C"}]},"skills":["Close Combat","Ranged Combat"],"specialties":["Brawler","Melee","Killer","Martial Artist","Rifleman","Sidearms"],"gear":["Any civilian firearm","D6 reloads","Knife"]},{"key":"burglar","name":"Burglar","requirements":{"text":"AGL and INT C+","all":[{"attr":"AGL","min":"C"},{"attr":"INT","min":"C"}]},"skills":["Recon"],"specialties":["Brawler","Sidearms","Mountaineer","Infiltrator","Electrician","Locksmith"],"gear":["Pistol or revolver","D6 reloads","Lockpick set (TECH +2)"]},{"key":"hustler","name":"Hustler","requirements":{"text":"INT and EMP C+","all":[{"attr":"INT","min":"C"},{"attr":"EMP","min":"C"}]},"skills":["Recon","Persuasion"],"specialties":["Sidearms","Infiltrator","Scout","Interrogator","Psy Ops","Trader"],"gear":["Pistol or revolver","D6 reloads"]},{"key":"prisoner","name":"Prisoner","requirements":{"text":"--"},"skills":["Close Combat"],"specialties":["Brawler","Melee","Killer","Ranger","SERE Training","Scrounger"],"gear":["Any civilian firearm","D6 reloads","Knife"]}]},{"key":"intelligence","name":"Intelligence","type":"intelligence","blurb":"Agents in the field gathering information, assassinating enemy leaders, assisting partisans.","careers":[{"key":"agent","name":"Agent","requirements":{"text":"INT B+, at least one term in Education","all":[{"attr":"INT","min":"B"}],"terms_in":{"group":"education","min":1}},"skills":["Ranged Combat","Recon","Persuasion"],"specialties":["Intelligence","Locksmith","Investigator","Scout","Psy Ops","Sidearms"],"gear":["Pistol","D6 reloads","Lockpick set","Knife or explosives","Personal medkit"]},{"key":"assassin","name":"Assassin","requirements":{"text":"EMP C or D, AGL B+, one or more terms as an Agent","all":[{"attr":"AGL","min":"B"}],"max":[{"attr":"EMP","max":"C"}],"terms_in":{"career":"agent","min":1}},"skills":["Close Combat","Ranged Combat"],"specialties":["Killer","Interrogator","Sniper","Martial Artist","Improvised Munitions","Infiltrator"],"gear":["Sniper rifle or submachinegun (suppressed)","D6 reloads","Radio or binoculars","Knife or explosives","Personal medkit"]},{"key":"paramilitary","name":"Paramilitary","requirements":{"text":"STR and AGL B+, one or more terms in the military","all":[{"attr":"STR","min":"B"},{"attr":"AGL","min":"B"}],"terms_in":{"group":"military","min":1}},"skills":["Heavy Weapons","Ranged Combat","Survival"],"specialties":["Brawler","Rifleman","Machinegunner","Combat Engineer","Improvised Munitions","Tactician"],"gear":["Assault rifle, LMG or ATRL","D6 reloads","Knife or D6 hand grenades","Personal medkit"]}]},{"key":"blue_collar","name":"Blue Collar","type":"blue_collar","blurb":"The vast majority of the population, determined to take back control of what is left of the world.","careers":[{"key":"driver","name":"Driver","requirements":{"text":"AGL B+","all":[{"attr":"AGL","min":"B"}]},"skills":["Tech"],"specialties":["Biker","Boatman","Navigator","Pilot","Racer","Tanker"],"gear":["Any civilian firearm","D3 reloads","Any civilian car or truck","Vehicle tools"]},{"key":"farmer","name":"Farmer","requirements":{"text":"None"},"skills":["Survival"],"specialties":["Cook","Farmer","Fisher","Hunter","Forager","Rider"],"gear":["Any civilian firearm","D3 reloads","Pickup truck","Basic toolkit","2D6 rations of food"]},{"key":"mechanic","name":"Mechanic","requirements":{"text":"None"},"skills":["Tech"],"specialties":["Blacksmith","Gunsmith","Locksmith","Mechanic","Scrounger","Improvised Munitions"],"gear":["Any civilian firearm","D3 reloads","Pickup truck","Basic tools","Vehicle tools or weapon tools"]},{"key":"construction","name":"Construction","requirements":{"text":"STR B+","all":[{"attr":"STR","min":"B"}]},"skills":["Close Combat","Tech"],"specialties":["Brawler","Builder","Load Carrier","Blacksmith","Electrician","Improvised Munitions"],"gear":["Any civilian firearm","D3 reloads","Crowbar","Pickup truck","Basic tools"]}]},{"key":"education","name":"Education","type":"education","blurb":"A direct path out of blue-collar jobs and into more lucrative white-collar work.","careers":[{"key":"liberal_arts","name":"Liberal Arts","requirements":{"text":"INT and EMP C+","all":[{"attr":"INT","min":"C"},{"attr":"EMP","min":"C"}]},"skills":["Persuasion"],"specialties":["Historian","Cook","Linguist","Musician","Psy Ops","Counselor"],"gear":["Any civilian firearm","D3 reloads","Dictionary in any language","Bicycle"]},{"key":"sciences","name":"Sciences","requirements":{"text":"INT B+","all":[{"attr":"INT","min":"B"}]},"skills":["Tech"],"specialties":["Chemist","Communication","Computers","Electrician","Scientist","Linguist"],"gear":["Any civilian firearm","D3 reloads","Bicycle or 2WD car with half a tank of gasoline"]}]},{"key":"white_collar","name":"White Collar","type":"white_collar","blurb":"Professional, desk, managerial or administrative work.","careers":[{"key":"doctor","name":"Doctor","requirements":{"text":"Two terms in Education (Sciences), EMP B+","all":[{"attr":"EMP","min":"B"}],"terms_in":{"career":"sciences","min":2}},"skills":["Medical Aid","Persuasion"],"specialties":["Linguist","Combat Medic","Counselor","Field Surgeon","General Practitioner","Veterinarian"],"gear":["Any civilian firearm","D3 reloads","D6 personal medkits","Pain relievers","Surgical instruments"]},{"key":"professor","name":"Professor","requirements":{"text":"Two terms in Education (Liberal Arts), INT B+","all":[{"attr":"INT","min":"B"}],"terms_in":{"career":"liberal_arts","min":2}},"skills":["Persuasion"],"specialties":["Historian","Chemist","Scientist","Linguist","Psy Ops","Teacher"],"gear":["Any civilian firearm","D3 reloads","2WD car with half a tank of gasoline"]},{"key":"manager","name":"Manager","requirements":{"text":"One term in Education (any), EMP B+","all":[{"attr":"EMP","min":"B"}],"terms_in":{"group":"education","min":1}},"skills":["Tech","Command","Persuasion"],"specialties":["Quartermaster","Computers","Frontline Leader","Logistician","Teacher","Counselor"],"gear":["Any civilian firearm","D3 reloads","Pocket calculator","2WD car with half a tank of gasoline"]}]}]},"names":{"_note":"Not book content. Period-plausible name pools for the random-name button, grouped by the nationalities the rank table covers. Nicknames are the sort of thing a squad hands out.","names":{"United States":{"given":["James","Robert","Michael","Mary","Patricia","Linda","David","Richard","Susan","Karen","Thomas","Charles","Nancy","Betty","Joseph","Daniel","Sandra","Donna","Mark","Paul","Carol","Ruth","Steven","Kenneth","Sharon","Michelle","Gary","Larry","Deborah","Angela"],"family":["Keller","Ronson","Diaz","Ramirez","Sullivan","Novak","Brennan","Cole","Ward","Hayes","Mercer","Doyle","Whitfield","Boone","Vance","Kowalczyk","Rhodes","Salazar","Tate","Mills"]},"Soviet Union":{"given":["Aleksandr","Sergei","Dmitri","Yuri","Nikolai","Pavel","Viktor","Anatoly","Irina","Svetlana","Natalya","Olga","Galina","Mikhail","Boris","Andrei","Valentina","Larisa","Igor","Lyudmila"],"family":["Ivanov","Petrov","Sokolov","Volkov","Popov","Morozov","Lebedev","Kuznetsov","Orlov","Zaytsev","Fedorov","Belov","Titov","Gordeyev","Rybakov","Shashkov"]},"Poland":{"given":["Andrzej","Kasia","Marek","Tomasz","Piotr","Jacek","Agnieszka","Ewa","Zofia","Krzysztof","Wojciech","Halina","Janusz","Bogdan","Marta","Stanislaw"],"family":["Kowalski","Nowak","Wisniewski","Wojcik","Kaminski","Zielinski","Szymanski","Dabrowski","Lewandowski","Mazur","Krawczyk","Piotrowski","Grabowski","Pawlak"]},"Sweden":{"given":["Erik","Lars","Anders","Karin","Ingrid","Nils","Gustav","Britta","Sven","Malin","Bjorn","Astrid","Henrik","Elsa","Ove","Sigrid"],"family":["Andersson","Johansson","Karlsson","Nilsson","Eriksson","Larsson","Olsson","Persson","Lindqvist","Bergstrom","Sandberg","Holm","Ahlgren","Ekstrom"]},"Other / local":{"given":["Hana","Tomas","Milan","Vera","Ana","Josef","Katarina","Dragan","Elena","Petar","Ilse","Klaus","Renate","Dieter","Magda","Stefan"],"family":["Novotny","Horvath","Petrovic","Vargas","Weber","Schneider","Bauer","Fischer","Kovac","Toth","Marek","Simic","Lang","Reiter"]}},"nicknames":["Doc","Preacher","Two-Fer","Sparks","Bear","Ghost","Tex","Ace","Rook","Grinder","Pockets","Halftrack","Radar","Mouse","Shovel","Cactus","Padre","Wrench","Whisper","Bulldog","Nickel","Trigger","Cinder","Salty","Patch","Gears","Hitch","Smoke"]}};</script>
+<script>
+/* Twilight: 2000 4th Edition creation engine -- the LIFE PATH method (printed p31).
+   Pure logic, no DOM. The UI owns what is asked next; this file owns what is legal.
+
+   The book's own 21-step order is followed exactly. Where a step is a table decision
+   rather than a personal one (group gear, buddy, how you met) the engine records the
+   answer but rolls nothing.
+*/
+(function (root) {
+  'use strict';
+
+  // ---------- deterministic RNG (seedable so life paths can be replayed) ----------
+  function RNG(seed) {
+    this.s = (seed >>> 0) || 1;
+  }
+  RNG.prototype.next = function () {
+    var x = this.s;                       // xorshift32
+    x ^= x << 13; x >>>= 0;
+    x ^= x >> 17;
+    x ^= x << 5;  x >>>= 0;
+    this.s = x;
+    return x / 4294967296;
+  };
+  RNG.prototype.die = function (n) { return Math.floor(this.next() * n) + 1; };
+  RNG.prototype.d3 = function () { return this.die(3); };
+  RNG.prototype.d6 = function () { return this.die(6); };
+  RNG.prototype.d8 = function () { return this.die(8); };
+  RNG.prototype.d2d3 = function () { return this.d3() + this.d3(); };
+  RNG.prototype.pick = function (a) { return a[Math.floor(this.next() * a.length)]; };
+
+  // ---------- the A-D ladder ----------
+  // F is "untrained" and only ever applies to skills. Attributes run A..D.
+  var RANKED = ['F', 'D', 'C', 'B', 'A'];
+  var DIE_SIZE = { A: 12, B: 10, C: 8, D: 6, F: 0 };
+
+  function rank(level) { var i = RANKED.indexOf(level); return i < 0 ? 0 : i; }
+  function levelAt(i) { return RANKED[Math.max(0, Math.min(RANKED.length - 1, i))]; }
+  function dieSize(level) { return DIE_SIZE[level] || 0; }
+  function atLeast(level, min) { return rank(level) >= rank(min); }
+  function stepUp(level, n) { return levelAt(rank(level) + (n === undefined ? 1 : n)); }
+  function stepDown(level, n) { return levelAt(rank(level) - (n === undefined ? 1 : n)); }
+
+  var ATTRS = ['STR', 'AGL', 'INT', 'EMP'];
+
+  // ---------- state ----------
+  function newState(DATA, seed) {
+    return {
+      DATA: DATA,
+      rng: new RNG(seed),
+      seed: seed,
+
+      name: '', nickname: '', nationality: '', localMilitia: false,
+
+      attrs: { STR: 'C', AGL: 'C', INT: 'C', EMP: 'C' },
+      attrIncreasesLeft: 0,
+      tradedDown: null,          // the attribute dropped C -> D for a bonus increase
+
+      skills: {},                // name -> 'D'|'C'|'B'|'A'; absent means F (untrained)
+      specialties: [],           // names, in the order gained
+      cuf: 'D',
+      age: 18,
+
+      childhood: null,
+      rankIndex: -1,             // index into DATA.core.ranks.ladder; -1 = civilian, no rank
+      terms: [],                 // append-only history
+      current: null,             // the term being played
+      careerTermCount: {},       // by career key
+      groupTermCount: {},        // by group key (military, education, ...)
+
+      war: false,
+      atWar: null,               // the At War term once played
+      prisonNext: false,         // set by the Crime prison rule
+
+      gear: [], rations: 0, water: 0, ammo: 0, rads: 0,
+      moralCode: '', bigDream: '', buddy: '', howMet: '', appearance: '',
+
+      log: [],
+      done: false
+    };
+  }
+
+  function start(DATA, seed) {
+    var S = newState(DATA, seed);
+    S.attrIncreasesLeft = S.rng.d2d3();     // step 3: 2D3 increases over a baseline of C
+    S.log.push('2D3 attribute increases: ' + S.attrIncreasesLeft);
+    return S;
+  }
+
+  // ---------- step 3: attributes ----------
+  function canRaiseAttr(S, a) {
+    return S.attrIncreasesLeft > 0 && rank(S.attrs[a]) < rank('A');
+  }
+  function raiseAttr(S, a) {
+    if (!canRaiseAttr(S, a)) return false;
+    S.attrs[a] = stepUp(S.attrs[a]);
+    S.attrIncreasesLeft--;
+    return true;
+  }
+  function lowerAttr(S, a) {
+    // Undo an increase, back down toward the C baseline (or D if this is the traded one).
+    var floor = (S.tradedDown === a) ? 'D' : 'C';
+    if (rank(S.attrs[a]) <= rank(floor)) return false;
+    S.attrs[a] = stepDown(S.attrs[a]);
+    S.attrIncreasesLeft++;
+    return true;
+  }
+  // "You can gain one extra increase by decreasing one attribute from C to D."
+  function tradeDown(S, a) {
+    if (S.tradedDown) return false;
+    if (S.attrs[a] !== 'C') return false;
+    S.attrs[a] = 'D';
+    S.tradedDown = a;
+    S.attrIncreasesLeft++;
+    return true;
+  }
+  function undoTradeDown(S) {
+    if (!S.tradedDown || S.attrIncreasesLeft < 1) return false;
+    S.attrs[S.tradedDown] = 'C';
+    S.tradedDown = null;
+    S.attrIncreasesLeft--;
+    return true;
+  }
+
+  // ---------- skills ----------
+  function skillLevel(S, name) { return S.skills[name] || 'F'; }
+  function canRaiseSkill(S, name) { return rank(skillLevel(S, name)) < rank('A'); }
+  function raiseSkill(S, name) {
+    if (!canRaiseSkill(S, name)) return false;
+    S.skills[name] = stepUp(skillLevel(S, name));   // F -> D on first take
+    return true;
+  }
+  function lowerSkill(S, name) {
+    var cur = skillLevel(S, name);
+    if (cur === 'F') return false;
+    var next = stepDown(cur);
+    if (next === 'F') delete S.skills[name]; else S.skills[name] = next;
+    return true;
+  }
+  function skillAttr(S, name) {
+    var list = S.DATA.skills.skills;
+    for (var i = 0; i < list.length; i++) if (list[i].name === name) return list[i].attr;
+    return 'INT';
+  }
+
+  // A skill roll is the skill die plus the attribute die; 6+ on either is a success,
+  // 10+ on one die counts as two. Untrained rolls the attribute die alone (printed p44).
+  function skillRoll(S, name) {
+    var a = skillAttr(S, name);
+    var dice = [dieSize(S.attrs[a])];
+    var sl = skillLevel(S, name);
+    if (sl !== 'F') dice.push(dieSize(sl));
+    var rolls = [], succ = 0;
+    for (var i = 0; i < dice.length; i++) {
+      var r = S.rng.die(dice[i]);
+      rolls.push({ die: dice[i], roll: r });
+      if (r >= 10) succ += 2; else if (r >= 6) succ += 1;
+    }
+    return { skill: name, attr: a, dice: dice, rolls: rolls, successes: succ, ok: succ > 0 };
+  }
+
+  // ---------- careers ----------
+  function allGroups(S) {
+    var out = [{
+      key: S.DATA.military.key, name: S.DATA.military.name, type: S.DATA.military.type,
+      blurb: S.DATA.military.blurb, careers: S.DATA.military.careers
+    }];
+    var g = S.DATA.civilian.groups;
+    for (var i = 0; i < g.length; i++) out.push(g[i]);
+    return out;
+  }
+  function findCareer(S, key) {
+    var gs = allGroups(S);
+    for (var i = 0; i < gs.length; i++) {
+      for (var j = 0; j < gs[i].careers.length; j++) {
+        if (gs[i].careers[j].key === key) return { group: gs[i], career: gs[i].careers[j] };
+      }
+    }
+    return null;
+  }
+
+  function meets(S, career, group) {
+    var r = career.requirements || {};
+    var fails = [];
+    if (r.all) for (var i = 0; i < r.all.length; i++) {
+      if (!atLeast(S.attrs[r.all[i].attr], r.all[i].min)) fails.push(r.all[i].attr + ' ' + r.all[i].min + '+');
+    }
+    if (r.any) {
+      var okAny = false;
+      for (var k = 0; k < r.any.length; k++) if (atLeast(S.attrs[r.any[k].attr], r.any[k].min)) okAny = true;
+      if (!okAny) fails.push(r.text);
+    }
+    if (r.max) for (var m = 0; m < r.max.length; m++) {
+      if (rank(S.attrs[r.max[m].attr]) > rank(r.max[m].max)) fails.push(r.max[m].attr + ' ' + r.max[m].max + ' or lower');
+    }
+    if (r.no_d_attribute) {
+      for (var a = 0; a < ATTRS.length; a++) if (S.attrs[ATTRS[a]] === 'D') { fails.push('no D attribute'); break; }
+    }
+    if (r.terms_in) {
+      var need = r.terms_in.min || 1;
+      var have = r.terms_in.career ? (S.careerTermCount[r.terms_in.career] || 0)
+                                   : (S.groupTermCount[r.terms_in.group] || 0);
+      if (have < need) fails.push(need + ' term' + (need === 1 ? '' : 's') + ' in ' +
+        (r.terms_in.career || r.terms_in.group));
+    }
+    if (r.forbid_terms_in) {
+      var bad = S.careerTermCount[r.forbid_terms_in.career] || 0;
+      if (bad > 0) fails.push('no terms as ' + r.forbid_terms_in.career);
+    }
+    // "OFFICERS must qualify for BOTH the Officer career path and the functional area
+    // in which they want to serve" (printed p32) -- so Officer is only open when at
+    // least one functional area is itself open.
+    if (career.key === 'officer' && !fails.length && !officerAreas(S).length) {
+      fails.push('a functional area to serve in');
+    }
+    return { ok: fails.length === 0, fails: fails };
+  }
+
+  // The four functional areas an officer may serve in, filtered to the ones they qualify
+  // for. Officer itself is excluded -- an officer serves in an area, not in "Officer".
+  function officerAreas(S) {
+    var out = [];
+    var cs = S.DATA.military.careers;
+    for (var i = 0; i < cs.length; i++) {
+      if (cs[i].key === 'officer') continue;
+      if (meets(S, cs[i], S.DATA.military).ok) out.push(cs[i]);
+    }
+    return out;
+  }
+
+  function careerOptions(S) {
+    var out = [];
+    var gs = allGroups(S);
+    for (var i = 0; i < gs.length; i++) {
+      for (var j = 0; j < gs[i].careers.length; j++) {
+        var c = gs[i].careers[j];
+        var m = meets(S, c, gs[i]);
+        out.push({ group: gs[i], career: c, ok: m.ok, fails: m.fails });
+      }
+    }
+    return out;
+  }
+
+  // ---------- the term ----------
+  function isFirstMilitaryTerm(S) { return (S.groupTermCount.military || 0) === 0; }
+  function isNCO(S) { return S.rankIndex >= 2; }   // Corporal / Specialist or above
+
+  // Skills a term may raise: the career's own list, the three generally available
+  // skills, and COMMAND once the character is a Corporal or above.
+  function termSkillOptions(S, career, group) {
+    var out = career.skills.slice();
+    // "They also get to choose which of the two columns to use for each career bonus"
+    // (printed p32) -- so an officer draws on the Officer list AND their functional area.
+    if (S.current && S.current.officerArea) {
+      var area = findCareer(S, S.current.officerArea);
+      if (area) for (var q = 0; q < area.career.skills.length; q++) {
+        if (out.indexOf(area.career.skills[q]) < 0) out.push(area.career.skills[q]);
+      }
+    }
+    var gen = S.DATA.skills.generally_available;
+    for (var i = 0; i < gen.length; i++) if (out.indexOf(gen[i]) < 0) out.push(gen[i]);
+    if (group.type === 'military' && isNCO(S) && out.indexOf('Command') < 0) out.push('Command');
+    return out;
+  }
+
+  function beginTerm(S, careerKey, officerArea) {
+    var f = findCareer(S, careerKey);
+    S.current = {
+      careerKey: careerKey, career: f.career, group: f.group,
+      officerArea: officerArea || null,
+      // captured before the term is counted, so the RANGED COMBAT rule fires on term one
+      firstMilitary: f.group.type === 'military' && isFirstMilitaryTerm(S),
+      termNo: S.terms.length + 1,
+      startAge: S.age,
+      increases: [],           // skill names raised this term, one entry per step
+      promoted: false, promotionRoll: null, specialtyGained: null,
+      years: 0, ageEffect: null, warRoll: null, log: []
+    };
+    if (S.rankIndex < 0 && f.group.type === 'military') {
+      S.rankIndex = rankIndexOf(S, f.career.starting_rank);
+      S.current.log.push({ v: '--', t: 'Enlisted as ' + f.career.starting_rank });
+    }
+    return S.current;
+  }
+
+  function rankIndexOf(S, name) {
+    var l = S.DATA.core.ranks.ladder;
+    for (var i = 0; i < l.length; i++) if (l[i].US === name) return i;
+    return 0;
+  }
+  function rankName(S, nationality) {
+    if (S.rankIndex < 0) return '';
+    var row = S.DATA.core.ranks.ladder[S.rankIndex];
+    var col = { 'United States': 'US', 'Soviet Union': 'Soviet', 'Poland': 'Polish', 'Sweden': 'Swedish' }[nationality || S.nationality] || 'US';
+    var n = row[col];
+    return (!n || n === '--') ? row.US : n;
+  }
+
+  // Step 6: two skills one step each, or one skill two steps.
+  function increasesRemaining(S) { return 2 - (S.current ? S.current.increases.length : 0); }
+  function canTakeIncrease(S, name) {
+    if (!S.current || increasesRemaining(S) <= 0) return false;
+    if (!canRaiseSkill(S, name)) return false;
+    // "one skill two steps" is allowed, so a repeat is legal -- but never three.
+    return true;
+  }
+  function takeIncrease(S, name) {
+    if (!canTakeIncrease(S, name)) return false;
+    raiseSkill(S, name);
+    S.current.increases.push(name);
+    return true;
+  }
+  function undoIncrease(S) {
+    if (!S.current || !S.current.increases.length) return false;
+    var name = S.current.increases.pop();
+    lowerSkill(S, name);
+    return true;
+  }
+  // The first term of military service must include RANGED COMBAT.
+  function increasesValid(S) {
+    if (!S.current || S.current.increases.length !== 2) return false;
+    if (S.current.group.type === 'military' && S.current.firstMilitary &&
+        S.current.increases.indexOf('Ranged Combat') < 0) return false;
+    return true;
+  }
+
+  // Step 7: promotion.
+  function promotionRoll(S, skillName) {
+    var r = skillRoll(S, skillName);
+    S.current.promotionRoll = r;
+    S.current.promoted = r.ok;
+    return r;
+  }
+  // An officer may roll their specialty on either column; everyone else has one table.
+  function specialtyTables(S) {
+    var t = S.current;
+    var out = [{ label: t.career.name, table: t.career.specialties }];
+    if (t.officerArea) {
+      var area = findCareer(S, t.officerArea);
+      if (area) out.push({ label: area.career.name, table: area.career.specialties });
+    }
+    return out;
+  }
+
+  function rollSpecialty(S, table) {
+    var d = S.rng.d6();
+    var got = table[d - 1];
+    return { roll: d, specialty: got, duplicate: S.specialties.indexOf(got) >= 0 };
+  }
+  function gainSpecialty(S, name) {
+    if (S.specialties.indexOf(name) >= 0) return false;
+    S.specialties.push(name);
+    return true;
+  }
+  function applyPromotion(S) {
+    var g = S.current.group;
+    if (g.type === 'military') {
+      S.rankIndex = Math.min(S.DATA.core.ranks.ladder.length - 1, Math.max(0, S.rankIndex) + 1);
+    }
+    if (g.type === 'military' || g.type === 'intelligence') {
+      if (rank(S.cuf) < rank('A')) S.cuf = stepUp(S.cuf);
+    }
+  }
+
+  // Step 8: age D6 years, then a D8 against terms completed.
+  function ageTerm(S) {
+    var years = S.rng.d6();
+    S.age += years;
+    S.current.years = years;
+    var roll = S.rng.d8();
+    var termsDone = S.terms.length + 1;          // this term counts once it closes
+    S.current.ageRoll = { roll: roll, terms: termsDone, effect: roll < termsDone };
+    return S.current.ageRoll;
+  }
+  function applyAgeEffect(S, attr) {
+    if (S.attrs[attr] === 'D') return false;     // cannot go below D
+    S.attrs[attr] = stepDown(S.attrs[attr]);
+    S.current.ageEffect = attr;
+    return true;
+  }
+  function ageEffectPossible(S) {
+    for (var i = 0; i < ATTRS.length; i++) if (S.attrs[ATTRS[i]] !== 'D') return true;
+    return false;
+  }
+
+  // Step 9: war roll. Local militia skip it -- war breaks out by the end of term one.
+  function warRoll(S) {
+    if (S.localMilitia && S.terms.length + 1 >= 1) {
+      S.current.warRoll = { roll: null, terms: S.terms.length + 1, war: true, militia: true };
+      return S.current.warRoll;
+    }
+    var roll = S.rng.d8();
+    var termsDone = S.terms.length + 1;
+    S.current.warRoll = { roll: roll, terms: termsDone, war: roll < termsDone };
+    return S.current.warRoll;
+  }
+
+  function closeTerm(S) {
+    var t = S.current;
+    S.terms.push(t);
+    S.careerTermCount[t.careerKey] = (S.careerTermCount[t.careerKey] || 0) + 1;
+    S.groupTermCount[t.group.key] = (S.groupTermCount[t.group.key] || 0) + 1;
+    if (t.warRoll && t.warRoll.war) S.war = true;
+    // Crime: if war did not break out, an odd D6 sends you to prison next term.
+    // The UI shows this roll on the same screen as the war roll, so if it has already
+    // been made it is reused rather than rolled a second time.
+    if (t.group.key === 'crime' && !S.war) {
+      t.prisonRoll = t.prisonPending || (function () {
+        var d = S.rng.d6();
+        return { roll: d, prison: d % 2 === 1 };
+      })();
+      S.prisonNext = t.prisonRoll.prison;
+    } else {
+      S.prisonNext = false;
+    }
+    S.current = null;
+    return t;
+  }
+
+  // ---------- the At War term ----------
+  function lastCareerTerm(S) { return S.terms.length ? S.terms[S.terms.length - 1] : null; }
+
+  // The draft: a civilian final term (intelligence excepted) for a non-local character.
+  function draftApplies(S) {
+    var t = lastCareerTerm(S);
+    if (!t) return false;
+    if (S.localMilitia) return false;
+    var ty = t.group.type;
+    return ty !== 'military' && ty !== 'intelligence';
+  }
+  function atWarColumn(S) {
+    if (draftApplies(S)) return 'Military';
+    var t = lastCareerTerm(S);
+    if (!t) return 'Other';
+    return { military: 'Military', intelligence: 'Other', blue_collar: 'Blue Collar',
+             white_collar: 'White Collar', education: 'White Collar', civilian: 'Other' }[t.group.type] || 'Other';
+  }
+  function atWarSpecialtyTable(S) {
+    var col = atWarColumn(S);
+    var rows = S.DATA.core.at_war.table.rows;
+    var out = [];
+    for (var i = 0; i < rows.length; i++) out.push(rows[i][col]);
+    return out;
+  }
+  // The draft forces RANGED COMBAT unless the character already has D or better.
+  function atWarForcedSkill(S) {
+    if (!draftApplies(S)) return null;
+    return rank(skillLevel(S, 'Ranged Combat')) >= rank('D') ? null : 'Ranged Combat';
+  }
+  function beginAtWar(S) {
+    S.current = {
+      careerKey: 'at_war', career: { name: 'At War', skills: [] },
+      group: { key: 'at_war', name: 'At War', type: 'at_war' },
+      termNo: S.terms.length + 1, startAge: S.age,
+      increases: [], atWar: true, log: []
+    };
+    return S.current;
+  }
+  // At War raises any two DIFFERENT skills one step each.
+  function canTakeAtWarIncrease(S, name) {
+    if (!S.current || S.current.increases.length >= 2) return false;
+    if (S.current.increases.indexOf(name) >= 0) return false;
+    return canRaiseSkill(S, name);
+  }
+  function closeAtWar(S) {
+    var t = S.current;
+    S.atWar = t;
+    S.terms.push(t);
+    S.current = null;
+    return t;
+  }
+
+  // ---------- derived ----------
+  function hitCapacity(S) { return Math.ceil((dieSize(S.attrs.STR) + dieSize(S.attrs.AGL)) / 4); }
+  function stressCapacity(S) { return Math.ceil((dieSize(S.attrs.INT) + dieSize(S.attrs.EMP)) / 4); }
+  function unitMorale(S) { return skillLevel(S, 'Command'); }
+
+  // Gear comes from the final career term BEFORE the At War term -- or from Combat Arms
+  // if the character was drafted.
+  function gearSource(S) {
+    var t = lastPreWarTerm(S);
+    if (!t) return null;
+    if (draftApplies(S)) {
+      var ca = findCareer(S, 'combat_arms');
+      return { name: 'Combat Arms (drafted)', gear: ca.career.gear };
+    }
+    return { name: t.career.name, gear: t.career.gear || [] };
+  }
+  function lastPreWarTerm(S) {
+    for (var i = S.terms.length - 1; i >= 0; i--) if (!S.terms[i].atWar) return S.terms[i];
+    return null;
+  }
+  function rollFinalSupplies(S) {
+    S.rations = S.rng.d6();
+    S.water = S.rng.d6();
+    S.ammo = S.rng.d6();
+    S.rads = S.rng.d6();
+    return { rations: S.rations, water: S.water, ammo: S.ammo, rads: S.rads };
+  }
+
+  var API = {
+    RNG: RNG, ATTRS: ATTRS, RANKED: RANKED,
+    rank: rank, levelAt: levelAt, dieSize: dieSize, atLeast: atLeast,
+    stepUp: stepUp, stepDown: stepDown,
+    start: start, newState: newState,
+    canRaiseAttr: canRaiseAttr, raiseAttr: raiseAttr, lowerAttr: lowerAttr,
+    tradeDown: tradeDown, undoTradeDown: undoTradeDown,
+    skillLevel: skillLevel, raiseSkill: raiseSkill, lowerSkill: lowerSkill,
+    canRaiseSkill: canRaiseSkill, skillAttr: skillAttr, skillRoll: skillRoll,
+    allGroups: allGroups, findCareer: findCareer, meets: meets, careerOptions: careerOptions,
+    officerAreas: officerAreas, specialtyTables: specialtyTables,
+    isFirstMilitaryTerm: isFirstMilitaryTerm, isNCO: isNCO, termSkillOptions: termSkillOptions,
+    beginTerm: beginTerm, rankName: rankName, rankIndexOf: rankIndexOf,
+    increasesRemaining: increasesRemaining, canTakeIncrease: canTakeIncrease,
+    takeIncrease: takeIncrease, undoIncrease: undoIncrease, increasesValid: increasesValid,
+    promotionRoll: promotionRoll, rollSpecialty: rollSpecialty, gainSpecialty: gainSpecialty,
+    applyPromotion: applyPromotion,
+    ageTerm: ageTerm, applyAgeEffect: applyAgeEffect, ageEffectPossible: ageEffectPossible,
+    warRoll: warRoll, closeTerm: closeTerm,
+    lastCareerTerm: lastCareerTerm, lastPreWarTerm: lastPreWarTerm,
+    draftApplies: draftApplies, atWarColumn: atWarColumn, atWarSpecialtyTable: atWarSpecialtyTable,
+    atWarForcedSkill: atWarForcedSkill, beginAtWar: beginAtWar,
+    canTakeAtWarIncrease: canTakeAtWarIncrease, closeAtWar: closeAtWar,
+    hitCapacity: hitCapacity, stressCapacity: stressCapacity, unitMorale: unitMorale,
+    gearSource: gearSource, rollFinalSupplies: rollFinalSupplies
+  };
+
+  if (typeof module !== 'undefined' && module.exports) module.exports = API;
+  root.T2KEngine = API;
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+<script>
+/* Twilight: 2000 generator -- UI driver.
+   The engine owns the rules; this file owns what the screen asks next.
+   Rendering dispatches on S.phase + S.sub, because much of the term is REPORTING a
+   roll rather than asking a question. */
+(function () {
+  'use strict';
+  var E = window.T2KEngine;
+  var main, track;
+
+  var PHASES = [
+    ['who', 'Who You Are'], ['attrs', 'Attributes'], ['childhood', 'Childhood'],
+    ['terms', 'Life Path'], ['atwar', 'At War'], ['finish', 'Final Details'], ['done', 'Dossier']
+  ];
+
+  var S = null;
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function seed() { return (Math.floor(Math.random() * 4294967295) >>> 0) || 1; }
+
+  function fresh() {
+    S = E.start(DATA, seed());
+    S.phase = 'who';
+    S.sub = null;
+    S.nationality = 'United States';
+    S.termLog = [];
+    S.pendingCareer = null;
+    S.pendingArea = null;
+    S.gearPicks = {};
+    window.__S = S;
+  }
+
+  // ---------------- render ----------------
+  function renderTrack() {
+    var idx = 0;
+    for (var i = 0; i < PHASES.length; i++) if (PHASES[i][0] === S.phase) idx = i;
+    track.innerHTML = PHASES.map(function (p, i) {
+      var cls = 'track-item' + (i === idx ? ' active' : (i < idx ? ' done' : ''));
+      return '<div class="' + cls + '">' + esc(p[1]) + '</div>';
+    }).join('');
+  }
+
+  var lastView = null;
+  function render() {
+    renderTrack();
+    var h = '';
+    if (S.phase === 'who') h = viewWho();
+    else if (S.phase === 'attrs') h = viewAttrs();
+    else if (S.phase === 'childhood') h = viewChildhood();
+    else if (S.phase === 'terms') h = viewTerms();
+    else if (S.phase === 'atwar') h = viewAtWar();
+    else if (S.phase === 'finish') h = viewFinish();
+    else h = viewDossier();
+    main.innerHTML = h + (S.phase === 'done' ? printSheet() : '');
+    var view = S.phase + '/' + (S.sub || '');
+    if (view !== lastView) { lastView = view; window.scrollTo(0, 0); }
+  }
+
+  // ---- shared panels ----
+  function attrsPanel(editable) {
+    return '<div class="panel"><div class="panel-t">Attributes</div><div class="attrs">' +
+      E.ATTRS.map(function (a) {
+        var lv = S.attrs[a];
+        var btns = editable ? '<div class="at-btns">' +
+          '<button class="at-btn" onclick="A.attrDown(\'' + a + '\')"' +
+            (canLower(a) ? '' : ' disabled') + '>&minus;</button>' +
+          '<button class="at-btn" onclick="A.attrUp(\'' + a + '\')"' +
+            (E.canRaiseAttr(S, a) ? '' : ' disabled') + '>+</button></div>' : '';
+        return '<div class="at"><div class="at-k">' + a + '</div><div class="at-v">' + lv +
+          '</div><div class="at-d">D' + E.dieSize(lv) + '</div>' + btns + '</div>';
+      }).join('') + '</div>' +
+      (editable ? '<div class="at-note">' + S.attrIncreasesLeft + ' increase' +
+        (S.attrIncreasesLeft === 1 ? '' : 's') + ' left to spend</div>' : '') +
+      '</div>';
+  }
+  function canLower(a) {
+    var floor = (S.tradedDown === a) ? 'D' : 'C';
+    return E.rank(S.attrs[a]) > E.rank(floor);
+  }
+
+  function skillsPanel() {
+    var keys = Object.keys(S.skills).sort();
+    if (!keys.length) return '';
+    return '<div class="panel"><div class="panel-t">Skills</div><div class="skills-list">' +
+      keys.map(function (k) {
+        return '<div class="sk"><span>' + esc(k) + '</span><span class="sk-v">' + S.skills[k] +
+          ' &middot; D' + E.dieSize(S.skills[k]) + '</span></div>';
+      }).join('') + '</div></div>';
+  }
+  function specialtiesPanel() {
+    if (!S.specialties.length) return '';
+    return '<div class="panel"><div class="panel-t">Specialties</div><div class="spec-list">' +
+      S.specialties.map(function (sp) {
+        return '<div class="sk"><span>' + esc(sp) + '</span></div>';
+      }).join('') + '</div></div>';
+  }
+  function statusLine() {
+    var r = E.rankName(S);
+    return 'Age ' + S.age + ' &middot; CUF ' + S.cuf + (r ? ' &middot; ' + esc(r) : '') +
+      ' &middot; ' + S.terms.length + ' term' + (S.terms.length === 1 ? '' : 's');
+  }
+  function rollLine(v, t, cls) {
+    return '<div class="roll ' + (cls || '') + '"><span class="roll-v">' + v +
+      '</span><span class="roll-t">' + t + '</span></div>';
+  }
+  function diceHTML(rolls) {
+    return '<span class="dice">' + rolls.map(function (r) {
+      return '<span class="die' + (r.roll >= 6 ? ' hit' : '') + '">' + r.roll + '</span>';
+    }).join('') + '</span>';
+  }
+
+  // ---- 1. who you are ----
+  function viewWho() {
+    var nats = DATA.core.nationality.options;
+    return '<div class="step-h">Who You Are</div>' +
+      '<div class="step-p">You are 18 years old and the world has not ended yet. Nationality does not change how you are built &mdash; only your gear, your language and what your rank is called.</div>' +
+      '<div class="panel"><div class="panel-t">Name and nation</div><div class="grid2">' +
+      '<div><label class="lbl">Name</label><input class="txt name-inp" value="' + esc(S.name) +
+        '" oninput="A.set(\'name\',this.value)" placeholder="Your character">' +
+      '<button class="btn ghost btn-rand" type="button" onclick="A.randName()">&#9860; Random name</button></div>' +
+      '<div><label class="lbl">Nickname</label><input class="txt nick-inp" value="' + esc(S.nickname) +
+        '" oninput="A.set(\'nickname\',this.value)" placeholder="Optional"></div>' +
+      '</div>' +
+      '<div style="margin-top:14px"><label class="lbl">Nationality</label><select class="sel" onchange="A.set(\'nationality\',this.value);A.rerender()">' +
+      nats.map(function (n) {
+        return '<option value="' + esc(n) + '"' + (S.nationality === n ? ' selected' : '') + '>' + esc(n) + '</option>';
+      }).join('') + '</select></div>' +
+      '<div class="opt' + (S.localMilitia ? ' on' : '') + '" style="margin-top:12px" onclick="A.toggleMilitia()">' +
+      '<div class="opt-box">' + (S.localMilitia ? '&#10003;' : '') + '</div><div>' +
+      '<div class="opt-n">Local militia</div><div class="opt-d">Fighting on your own home ground. War automatically breaks out by the end of your first term, and you also get the At War career.</div></div></div>' +
+      '</div>' +
+      '<div class="note">' + esc(DATA.core.nationality.languages) + '</div>' +
+      '<div class="btn-row"><button class="btn ghost" onclick="A.restart()">Start over</button>' +
+      '<button class="btn" onclick="A.go(\'attrs\')">Continue &rarr;</button></div>';
+  }
+
+  // ---- 2. attributes ----
+  function viewAttrs() {
+    var done = S.attrIncreasesLeft === 0;
+    return '<div class="step-h">Attributes</div>' +
+      '<div class="step-p">Everyone starts at C in all four. You rolled 2D3 for how many increases you get &mdash; spend them where you like. A is the top of human capacity; the die you roll goes up with the grade.</div>' +
+      attrsPanel(true) +
+      '<div class="panel"><div class="panel-t">Trade one down</div>' +
+      '<div class="opt' + (S.tradedDown ? ' on' : '') + '" onclick="A.toggleTrade()">' +
+      '<div class="opt-box">' + (S.tradedDown ? '&#10003;' : '') + '</div><div>' +
+      '<div class="opt-n">Drop one attribute from C to D for one extra increase' +
+        (S.tradedDown ? ' &mdash; traded ' + esc(S.tradedDown) : '') + '</div>' +
+      '<div class="opt-d">Optional. Tick this, then use the minus button on the attribute you want to weaken.</div></div></div></div>' +
+      '<div class="note">Careers have attribute requirements, so it is worth knowing where you are heading before you spend these. Special Operations wants STR and AGL at B, an Officer needs INT B and no D at all.</div>' +
+      '<div class="btn-row"><button class="btn ghost" onclick="A.go(\'who\')">&larr; Back</button>' +
+      '<button class="btn"' + (done ? '' : ' disabled') + ' onclick="A.go(\'childhood\')">Continue &rarr;</button></div>';
+  }
+
+  // ---- 3. childhood ----
+  function viewChildhood() {
+    var h = '<div class="step-h">Childhood</div>' +
+      '<div class="step-p">Roll a D6 for what your childhood was like, or choose it. Then take one of its skills at level D and roll a D6 for a specialty.</div>';
+    if (!S.childhood) {
+      h += '<div class="panel"><div class="panel-t">Where you grew up</div>' +
+        DATA.core.childhood.table.map(function (c) {
+          return '<div class="opt" onclick="A.childhood(' + c.d6 + ')"><div class="opt-box"></div><div>' +
+            '<div class="opt-n">' + c.d6 + '. ' + esc(c.name) + '</div>' +
+            '<div class="opt-d">' + c.skills.map(esc).join(', ') + '</div></div></div>';
+        }).join('') + '</div>' +
+        '<div class="btn-row"><button class="btn ghost" onclick="A.go(\'attrs\')">&larr; Back</button>' +
+        '<button class="btn" onclick="A.rollChildhood()">&#9860; Roll a D6</button></div>';
+      return h;
+    }
+    var ch = S.childhoodRow;
+    h += '<div class="panel"><div class="panel-t">' + esc(ch.name) + '</div>' +
+      (S.childhoodRoll ? rollLine(S.childhoodRoll, 'D6 for childhood: ' + esc(ch.name)) : '') +
+      '<div class="panel-t" style="margin-top:14px">Take one skill at level D</div>' +
+      ch.skills.map(function (sk) {
+        var on = S.childhoodSkill === sk;
+        return '<div class="opt' + (on ? ' on' : '') + '" onclick="A.childhoodSkill(\'' + esc(sk) + '\')">' +
+          '<div class="opt-box">' + (on ? '&#10003;' : '') + '</div><div class="opt-n">' + esc(sk) + '</div></div>';
+      }).join('') + '</div>';
+    if (S.childhoodSkill) {
+      h += '<div class="panel"><div class="panel-t">Specialty</div>';
+      if (S.childhoodSpecialty) {
+        h += rollLine(S.childhoodSpecRoll, 'D6 for specialty: <b>' + esc(S.childhoodSpecialty) + '</b>', 'good');
+      } else {
+        h += '<div class="note">Roll a D6 on your childhood column for one specialty.</div>' +
+          '<div class="btn-row tight"><button class="btn" onclick="A.rollChildSpec()">&#9860; Roll a D6</button></div>';
+      }
+      h += '</div>';
+    }
+    h += skillsPanel() + specialtiesPanel();
+    h += '<div class="btn-row"><button class="btn ghost" onclick="A.resetChildhood()">Choose again</button>' +
+      '<button class="btn"' + (S.childhoodSpecialty ? '' : ' disabled') +
+      ' onclick="A.go(\'terms\')">Begin your life path &rarr;</button></div>';
+    return h;
+  }
+
+  // ---- 4. the term loop ----
+  function historyHTML() {
+    if (!S.terms.length) return '';
+    return '<div class="panel"><div class="panel-t">Life path so far</div><div class="hist">' +
+      S.terms.map(function (t, i) {
+        var bits = [];
+        if (t.promoted) bits.push('promoted');
+        if (t.specialtyGained) bits.push(t.specialtyGained);
+        if (t.ageEffect) bits.push(t.ageEffect + ' down');
+        if (t.atWarSpecialty) bits.push(t.atWarSpecialty);
+        // The At War term has no length of its own -- it is not aged for.
+        return '<div class="hist-row"><div class="hist-t">Term ' + (i + 1) + '</div>' +
+          '<div class="hist-c"><b>' + esc(t.career.name) + '</b>' +
+          (t.officerArea ? ' <span class="hist-r">(' + esc(E.findCareer(S, t.officerArea).career.name) + ')</span>' : '') +
+          (bits.length ? ' <span class="hist-r">&middot; ' + esc(bits.join(', ')) + '</span>' : '') + '</div>' +
+          '<div class="hist-r">' + (t.years ? t.years + 'yr' : '&mdash;') + '</div></div>';
+      }).join('') + '</div></div>';
+  }
+
+  function viewTerms() {
+    var h = '<div class="step-h">Term ' + (S.terms.length + 1) + '</div>' +
+      '<div class="step-p">' + statusLine() + '. Each term runs D6 years. Pick a career you qualify for, take your training, then find out whether you were promoted, whether the years told on you, and whether the war has started.</div>';
+    h += historyHTML();
+
+    if (!S.sub || S.sub === 'pick') return h + viewPickCareer() + skillsPanel();
+    if (S.sub === 'train') return h + viewTrain() + skillsPanel();
+    if (S.sub === 'promote') return h + viewPromote() + skillsPanel();
+    if (S.sub === 'age') return h + viewAge() + skillsPanel();
+    return h;
+  }
+
+  function viewPickCareer() {
+    if (S.prisonNext) {
+      return '<div class="panel"><div class="panel-t">Caught</div>' +
+        '<div class="note warn">Your last term was a life of crime and the war did not start. You rolled odd on the D6 &mdash; this term is spent in prison.</div>' +
+        '<div class="opt" onclick="A.pickCareer(\'prisoner\')"><div class="opt-box"></div>' +
+        '<div class="opt-n">Serve your sentence</div></div></div>';
+    }
+    if (S.askArea) {
+      return '<div class="panel"><div class="panel-t">Officer &mdash; choose your functional area</div>' +
+        '<div class="note">An officer must qualify for both the Officer path and the area they serve in. You may draw skills from either column, and roll your specialty on either.</div>' +
+        S.askArea.map(function (c) {
+          return '<div class="opt" onclick="A.pickArea(\'' + c.key + '\')"><div class="opt-box"></div><div>' +
+            '<div class="opt-n">' + esc(c.name) + '</div>' +
+            '<div class="opt-d">' + esc(c.skills.join(', ')) + '</div></div></div>';
+        }).join('') +
+        '<div class="btn-row tight"><button class="btn ghost" onclick="A.cancelArea()">Back</button></div></div>';
+    }
+    var opts = E.careerOptions(S);
+    var groups = {};
+    opts.forEach(function (o) {
+      (groups[o.group.key] = groups[o.group.key] || { group: o.group, list: [] }).list.push(o);
+    });
+    var h = '';
+    Object.keys(groups).forEach(function (gk) {
+      var g = groups[gk];
+      h += '<div class="panel"><div class="panel-t">' + esc(g.group.name) + '</div>' +
+        (g.group.blurb ? '<div class="note">' + esc(g.group.blurb) + '</div>' : '') +
+        g.list.map(function (o) {
+          var c = o.career;
+          return '<div class="opt' + (o.ok ? '' : ' disabled') + (S.pendingCareer === c.key ? ' on' : '') +
+            '" onclick="' + (o.ok ? 'A.pickCareer(\'' + c.key + '\')' : '') + '">' +
+            '<div class="opt-box">' + (S.pendingCareer === c.key ? '&#10003;' : '') + '</div><div>' +
+            '<div class="opt-n">' + esc(c.name) +
+            (c.starting_rank ? ' <span class="hist-r">&mdash; enters as ' + esc(c.starting_rank) + '</span>' : '') + '</div>' +
+            '<div class="opt-d">' + esc(c.skills.join(', ')) + '</div>' +
+            (o.ok ? '' : '<div class="opt-x">needs ' + esc(o.fails.join(', ')) + '</div>') +
+            '</div></div>';
+        }).join('') + '</div>';
+    });
+    return h;
+  }
+
+  function viewTrain() {
+    var cur = S.current;
+    var pool = E.termSkillOptions(S, cur.career, cur.group);
+    var left = E.increasesRemaining(S);
+    var h = '<div class="panel"><div class="term-hd"><div class="term-n">' + esc(cur.career.name) +
+      (cur.officerArea ? ' &middot; ' + esc(E.findCareer(S, cur.officerArea).career.name) : '') +
+      '</div><div class="term-age">term ' + cur.termNo + '</div></div>' +
+      cur.log.map(function (l) { return rollLine(l.v, esc(l.t)); }).join('') +
+      '<div class="panel-t">Training &mdash; ' + (2 - left) + ' / 2 steps taken</div>' +
+      '<div class="note">Raise two skills one step each, or one skill two steps. A skill you have never had starts at D.' +
+      (cur.firstMilitary ? ' <b>This is your first term of military service, so one step must be Ranged Combat.</b>' : '') +
+      (E.isNCO(S) && cur.group.type === 'military' ? ' As a Corporal or above you may always take Command.' : '') +
+      '</div>' +
+      '<div class="skills-list">' + pool.map(function (sk) {
+        var taken = cur.increases.filter(function (x) { return x === sk; }).length;
+        var can = E.canTakeIncrease(S, sk);
+        return '<div class="opt' + (taken ? ' on' : '') + (can || taken ? '' : ' disabled') +
+          '" onclick="' + (can ? 'A.increase(\'' + esc(sk) + '\')' : '') + '">' +
+          '<div class="opt-box">' + (taken ? (taken > 1 ? taken : '&#10003;') : '') + '</div>' +
+          '<div class="opt-n">' + esc(sk) + ' <span class="hist-r">' + E.skillLevel(S, sk) +
+          (taken ? ' &rarr; ' + E.skillLevel(S, sk) : '') + '</span></div></div>';
+      }).join('') + '</div></div>';
+    var ready = E.increasesValid(S);
+    h += '<div class="btn-row"><button class="btn ghost"' + (cur.increases.length ? '' : ' disabled') +
+      ' onclick="A.undoIncrease()">Undo</button>' +
+      '<button class="btn"' + (ready ? '' : ' disabled') + ' onclick="A.toPromotion()">Roll for promotion &rarr;</button></div>';
+    if (!ready && cur.increases.length === 2 && cur.firstMilitary) {
+      h += '<div class="note warn">Your first military term must include Ranged Combat.</div>';
+    }
+    return h;
+  }
+
+  function viewPromote() {
+    var cur = S.current;
+    var h = '<div class="panel"><div class="term-hd"><div class="term-n">' + esc(cur.career.name) +
+      '</div><div class="term-age">term ' + cur.termNo + '</div></div>';
+    if (!cur.promotionRoll) {
+      h += '<div class="note">Make one unmodified skill roll with a skill you raised this term. You roll the skill die and its attribute die; a 6 or better on either is a success. You cannot push this roll.</div>' +
+        cur.increases.filter(function (v, i, a) { return a.indexOf(v) === i; }).map(function (sk) {
+          var at = E.skillAttr(S, sk);
+          return '<div class="opt" onclick="A.promote(\'' + esc(sk) + '\')"><div class="opt-box"></div><div>' +
+            '<div class="opt-n">' + esc(sk) + '</div>' +
+            '<div class="opt-d">D' + E.dieSize(E.skillLevel(S, sk)) + ' + ' + at + ' D' + E.dieSize(S.attrs[at]) + '</div></div></div>';
+        }).join('');
+      return h + '</div>';
+    }
+    var pr = cur.promotionRoll;
+    h += rollLine(diceHTML(pr.rolls), esc(pr.skill) + ' (' + pr.attr + '): ' +
+      (pr.ok ? pr.successes + ' success' + (pr.successes === 1 ? '' : 'es') + ' &mdash; promoted' : 'no successes &mdash; passed over'),
+      pr.ok ? 'good' : 'bad');
+    // The duplicate case is tested FIRST: it also has no specialtyGained yet, so the
+    // roll-a-table branch below would otherwise swallow it and offer another roll.
+    if (pr.ok && cur.duplicateSpecialty && !cur.specialtyGained) {
+      h += '<div class="note">You rolled ' + esc(cur.duplicateSpecialty) +
+        ', which you already have. Choose any specialty instead.</div>' + specialtyChooser();
+      return h + '</div>';
+    }
+    if (pr.ok && !cur.specialtyGained) {
+      var tables = E.specialtyTables(S);
+      h += '<div class="panel-t" style="margin-top:12px">Roll a D6 for your specialty</div>' +
+        (tables.length > 1 ? '<div class="note">As an officer you may roll on either column.</div>' : '') +
+        tables.map(function (t, i) {
+          return '<div class="opt" onclick="A.rollSpec(' + i + ')"><div class="opt-box"></div><div>' +
+            '<div class="opt-n">' + esc(t.label) + ' column</div>' +
+            '<div class="opt-d">' + esc(t.table.join(', ')) + '</div></div></div>';
+        }).join('');
+      return h + '</div>';
+    }
+    if (cur.specialtyGained) {
+      h += rollLine(cur.specialtyRoll || '&#9733;', 'Specialty: <b>' + esc(cur.specialtyGained) + '</b>' +
+        (cur.specialtyChosen ? ' (rolled a duplicate, so chosen instead)' : ''), 'good');
+      if (cur.rankGained) h += rollLine('&#9733;', 'Promoted to ' + esc(cur.rankGained), 'good');
+      if (cur.cufGained) h += rollLine('&#9733;', 'Coolness under fire rises to ' + cur.cufGained, 'good');
+    }
+    h += '</div>';
+    h += '<div class="btn-row"><span></span><button class="btn" onclick="A.toAge()">Continue &rarr;</button></div>';
+    return h;
+  }
+
+  function specialtyChooser() {
+    var all = [];
+    Object.keys(DATA.skills.specialties).forEach(function (g) {
+      DATA.skills.specialties[g].forEach(function (x) {
+        if (S.specialties.indexOf(x.name) < 0) all.push(x);
+      });
+    });
+    return '<div class="spec-list">' + all.map(function (x) {
+      return '<div class="opt" onclick="A.chooseSpec(\'' + esc(x.name) + '\')"><div class="opt-box"></div><div>' +
+        '<div class="opt-n">' + esc(x.name) + '</div><div class="opt-d">' + esc(x.desc) + '</div></div></div>';
+    }).join('') + '</div>';
+  }
+
+  function viewAge() {
+    var cur = S.current;
+    var h = '<div class="panel"><div class="term-hd"><div class="term-n">' + esc(cur.career.name) +
+      '</div><div class="term-age">term ' + cur.termNo + '</div></div>';
+    h += rollLine(cur.years, 'The term ran ' + cur.years + ' years. You are ' + S.age + '.');
+    var ar = cur.ageRoll;
+    h += rollLine(ar.roll, 'D8 against ' + ar.terms + ' term' + (ar.terms === 1 ? '' : 's') + ': ' +
+      (ar.effect ? 'the years have told on you' : 'no effect'), ar.effect ? 'bad' : 'good');
+    if (ar.effect && !cur.ageEffect && E.ageEffectPossible(S)) {
+      h += '<div class="note">Reduce one attribute by one step. It cannot go below D.</div>' +
+        '<div class="attrs">' + E.ATTRS.map(function (a) {
+          var can = S.attrs[a] !== 'D';
+          return '<div class="at" style="cursor:' + (can ? 'pointer' : 'not-allowed') + ';opacity:' + (can ? 1 : .4) +
+            '" onclick="' + (can ? 'A.ageHit(\'' + a + '\')' : '') + '">' +
+            '<div class="at-k">' + a + '</div><div class="at-v">' + S.attrs[a] + '</div>' +
+            '<div class="at-d">&rarr; ' + (can ? E.stepDown(S.attrs[a]) : 'D') + '</div></div>';
+        }).join('') + '</div></div>';
+      return h;
+    }
+    if (cur.ageEffect) h += rollLine('&darr;', esc(cur.ageEffect) + ' drops to ' + S.attrs[cur.ageEffect], 'bad');
+    if (ar.effect && !E.ageEffectPossible(S)) h += '<div class="note">Every attribute is already at D, so nothing more can be lost.</div>';
+
+    if (cur.warRoll) {
+      var wr = cur.warRoll;
+      h += wr.militia
+        ? rollLine('&#9888;', 'Local militia &mdash; the war reaches your home ground by the end of this term.', 'bad')
+        : rollLine(wr.roll, 'D8 against ' + wr.terms + ' term' + (wr.terms === 1 ? '' : 's') + ': ' +
+            (wr.war ? 'WAR BREAKS OUT' : 'not yet'), wr.war ? 'bad' : 'good');
+      if (S.current.prisonPending) {
+        h += rollLine(S.current.prisonPending.roll, 'Crime, and no war to hide behind: ' +
+          (S.current.prisonPending.prison ? 'odd &mdash; prison next term' : 'even &mdash; you got away with it'),
+          S.current.prisonPending.prison ? 'bad' : 'good');
+      }
+      h += '</div><div class="btn-row"><span></span><button class="btn" onclick="A.nextTerm()">' +
+        (wr.war ? 'To the war &rarr;' : 'Next term &rarr;') + '</button></div>';
+      return h;
+    }
+    h += '</div><div class="btn-row"><span></span><button class="btn" onclick="A.rollWar()">&#9860; Roll for war</button></div>';
+    return h;
+  }
+
+  // ---- 5. the At War term ----
+  function viewAtWar() {
+    var cur = S.current;
+    var forced = E.atWarForcedSkill(S);
+    var drafted = E.draftApplies(S);
+    var h = '<div class="step-h">At War</div>' +
+      '<div class="step-p">World War III. Everyone was trying hard to just stay safe and do what they could for themselves, their families and their teammates. Raise any two skills one step each, then take one last specialty. No promotion, and no ageing.</div>';
+    h += historyHTML();
+    if (drafted) {
+      h += '<div class="note warn"><b>Drafted.</b> Your last peacetime term was civilian and you are not a local, so you spend the war as a draftee or volunteer' +
+        (forced ? ' &mdash; one of your two increases must be Ranged Combat' : '') +
+        '. Your specialty is rolled on the Military column and your gear comes from Combat Arms.</div>';
+    }
+    if (!cur.atWarSpecialty) {
+      h += '<div class="panel"><div class="panel-t">Training &mdash; ' + cur.increases.length + ' / 2</div>' +
+        '<div class="note">Any two different skills, one step each. You cannot put both steps into one skill.</div>' +
+        '<div class="skills-list">' + DATA.skills.skills.map(function (sk) {
+          var on = cur.increases.indexOf(sk.name) >= 0;
+          var can = E.canTakeAtWarIncrease(S, sk.name);
+          return '<div class="opt' + (on ? ' on' : '') + (can || on ? '' : ' disabled') +
+            '" onclick="' + (can ? 'A.atWarIncrease(\'' + esc(sk.name) + '\')' : '') + '">' +
+            '<div class="opt-box">' + (on ? '&#10003;' : '') + '</div>' +
+            '<div class="opt-n">' + esc(sk.name) + ' <span class="hist-r">' + E.skillLevel(S, sk.name) + '</span></div></div>';
+        }).join('') + '</div></div>';
+      if (cur.increases.length === 2) {
+        h += '<div class="panel"><div class="panel-t">Final specialty &mdash; ' + esc(E.atWarColumn(S)) + ' column</div>' +
+          '<div class="note">' + esc(E.atWarSpecialtyTable(S).join(', ')) + '</div>' +
+          '<div class="btn-row tight"><button class="btn" onclick="A.rollAtWarSpec()">&#9860; Roll a D6</button></div></div>';
+      }
+      h += '<div class="btn-row"><button class="btn ghost"' + (cur.increases.length ? '' : ' disabled') +
+        ' onclick="A.undoAtWar()">Undo</button><span></span></div>';
+      return h;
+    }
+    h += '<div class="panel">' +
+      rollLine(cur.atWarSpecRoll || '&#9733;', 'Specialty: <b>' + esc(cur.atWarSpecialty) + '</b>' +
+        (cur.atWarChosen ? ' (rolled a duplicate, so chosen instead)' : ''), 'good') + '</div>';
+    h += skillsPanel() + specialtiesPanel();
+    h += '<div class="btn-row"><span></span><button class="btn" onclick="A.finishAtWar()">Continue &rarr;</button></div>';
+    return h;
+  }
+
+  // ---- 6. final details ----
+  function viewFinish() {
+    var gs = E.gearSource(S);
+    var h = '<div class="step-h">Final Details</div>' +
+      '<div class="step-p">Hit and stress capacity come straight off your attributes. The rest is who you are when the shooting stops.</div>';
+    h += '<div class="panel"><div class="panel-t">Capacities</div><div class="grid2">' +
+      '<div><div class="sk"><span>Hit capacity</span><span class="sk-v">' + E.hitCapacity(S) + '</span></div>' +
+      '<div class="sk"><span>Stress capacity</span><span class="sk-v">' + E.stressCapacity(S) + '</span></div></div>' +
+      '<div><div class="sk"><span>Coolness under fire</span><span class="sk-v">' + S.cuf + '</span></div>' +
+      '<div class="sk"><span>Your Command</span><span class="sk-v">' + E.unitMorale(S) + '</span></div></div>' +
+      '</div><div class="note">Unit morale is a group score equal to the highest Command in the group, so it is settled at the table, not here.</div></div>';
+
+    h += '<div class="panel"><div class="panel-t">Moral code</div>' +
+      '<input class="txt" value="' + esc(S.moralCode) + '" oninput="A.set(\'moralCode\',this.value)" placeholder="One sentence">' +
+      '<div class="note">' + DATA.core.moral_code_examples.map(function (x) {
+        return '<div class="opt" onclick="A.setField(\'moralCode\',\'' + esc(x).replace(/'/g, '&#39;') + '\')">' +
+          '<div class="opt-box"></div><div class="opt-n">' + esc(x) + '</div></div>';
+      }).join('') + '</div></div>';
+
+    h += '<div class="panel"><div class="panel-t">Big dream</div>' +
+      '<input class="txt" value="' + esc(S.bigDream) + '" oninput="A.set(\'bigDream\',this.value)" placeholder="What keeps you on your feet">' +
+      '<div class="note">' + DATA.core.big_dream_examples.map(function (x) {
+        return '<div class="opt" onclick="A.setField(\'bigDream\',\'' + esc(x).replace(/'/g, '&#39;') + '\')">' +
+          '<div class="opt-box"></div><div class="opt-n">' + esc(x) + '</div></div>';
+      }).join('') + '</div></div>';
+
+    h += '<div class="panel"><div class="panel-t">Your buddy, how you met, appearance</div><div class="grid2">' +
+      '<div><label class="lbl">Buddy</label><input class="txt" value="' + esc(S.buddy) +
+        '" oninput="A.set(\'buddy\',this.value)" placeholder="Another PC"></div>' +
+      '<div><label class="lbl">Appearance</label><input class="txt" value="' + esc(S.appearance) +
+        '" oninput="A.set(\'appearance\',this.value)" placeholder="A feature, clothing, a mannerism"></div>' +
+      '</div><div style="margin-top:14px"><label class="lbl">How you met the others</label>' +
+      '<input class="txt" value="' + esc(S.howMet) + '" oninput="A.set(\'howMet\',this.value)" placeholder="A sentence or two"></div></div>';
+
+    h += '<div class="panel"><div class="panel-t">Starting gear &mdash; ' + esc(gs ? gs.name : 'none') + '</div>' +
+      '<div class="note">From your last career term before the war. Where a line offers a choice, tick the one you took.</div>' +
+      '<div class="skills-list">' + (gs ? gs.gear : []).map(function (g, i) {
+        var on = S.gearPicks[i];
+        return '<div class="opt' + (on ? ' on' : '') + '" onclick="A.gear(' + i + ')">' +
+          '<div class="opt-box">' + (on ? '&#10003;' : '') + '</div><div class="opt-n">' + esc(g) + '</div></div>';
+      }).join('') + '</div>' +
+      (S.rations ? '<div class="note">Plus ' + ration(S.rations, 'ration') + ' of food, ' + ration(S.water, 'ration') +
+        ' of fresh water and ' + ration(S.ammo, 'round') + ' of ammo as currency. Starting permanent rads: ' + S.rads +
+        '. You also have a uniform or sturdy civilian clothing, and a canteen.</div>'
+        : '<div class="btn-row tight"><button class="btn" onclick="A.rollSupplies()">&#9860; Roll supplies and rads</button></div>') +
+      '</div>';
+
+    h += '<div class="btn-row"><button class="btn ghost" onclick="A.restart()">Start over</button>' +
+      '<button class="btn"' + (S.rations ? '' : ' disabled') + ' onclick="A.finish()">Finish &rarr;</button></div>';
+    return h;
+  }
+
+  // ---- 7. dossier ----
+  function viewDossier() {
+    var gs = E.gearSource(S);
+    var h = '<div class="step-h">' + esc(S.name || 'Unnamed') +
+      (S.nickname ? ' &ldquo;' + esc(S.nickname) + '&rdquo;' : '') + '</div>' +
+      '<div class="step-p">' + statusLine() + ' &middot; ' + esc(S.nationality) +
+      (S.childhood ? ' &middot; ' + esc(S.childhood) : '') + '</div>';
+    h += attrsPanel(false);
+    h += '<div class="panel"><div class="panel-t">Capacities</div><div class="grid2">' +
+      '<div><div class="sk"><span>Hit capacity</span><span class="sk-v">' + E.hitCapacity(S) + '</span></div>' +
+      '<div class="sk"><span>Stress capacity</span><span class="sk-v">' + E.stressCapacity(S) + '</span></div></div>' +
+      '<div><div class="sk"><span>Coolness under fire</span><span class="sk-v">' + S.cuf + '</span></div>' +
+      '<div class="sk"><span>Permanent rads</span><span class="sk-v">' + S.rads + '</span></div></div></div></div>';
+    h += historyHTML() + skillsPanel() + specialtiesPanel();
+    if (gs) {
+      h += '<div class="panel"><div class="panel-t">Gear &mdash; ' + esc(gs.name) + '</div><div class="skills-list">' +
+        gs.gear.map(function (g, i) {
+          return '<div class="sk"><span>' + (S.gearPicks[i] ? '' : '<span style="opacity:.45">') + esc(g) +
+            (S.gearPicks[i] ? '' : '</span>') + '</span></div>';
+        }).join('') + '</div>' +
+        '<div class="note">Plus ' + ration(S.rations, 'ration') + ' of food, ' + S.water + ' of water, ' + ration(S.ammo, 'round') + ' as currency.</div></div>';
+    }
+    h += '<div class="btn-row"><button class="btn ghost" onclick="A.restart()">Start over</button>' +
+      '<button class="btn" onclick="window.print()">Print sheet</button></div>';
+    return h;
+  }
+
+  // ---- printed sheet (CSS recreation; no publisher artwork) ----
+  function ration(n, word) { return n + ' ' + word + (n === 1 ? '' : 's'); }
+  function f(label, val) {
+    return '<div class="ps-f"><div class="ps-fl">' + esc(label) + '</div><div class="ps-fv">' + esc(val) + '</div></div>';
+  }
+  function printSheet() {
+    var gs = E.gearSource(S);
+    var skills = Object.keys(S.skills).sort();
+    var h = '<div id="printsheet"><div class="ps">';
+    h += '<div class="ps-top"><div class="ps-title">TWILIGHT: 2000</div><div class="ps-sub">CHARACTER RECORD</div></div>';
+    h += '<div class="ps-box"><div class="ps-2"><div>' +
+      f('Name', S.name + (S.nickname ? ' "' + S.nickname + '"' : '')) +
+      f('Nationality', S.nationality) + f('Rank', E.rankName(S) || 'Civilian') +
+      '</div><div>' + f('Age', S.age) + f('Childhood', S.childhood || '') +
+      f('Terms', S.terms.length) + '</div></div></div>';
+
+    h += '<div class="ps-band">Attributes</div><div class="ps-box"><div class="ps-at">' +
+      E.ATTRS.map(function (a) {
+        return '<div><div class="k">' + a + '</div><div class="v">' + S.attrs[a] +
+          '</div><div class="d">D' + E.dieSize(S.attrs[a]) + '</div></div>';
+      }).join('') +
+      '<div><div class="k">CUF</div><div class="v">' + S.cuf + '</div><div class="d">D' + E.dieSize(S.cuf) + '</div></div>' +
+      '</div><div class="ps-2" style="margin-top:8px"><div>' +
+      f('Hit capacity', E.hitCapacity(S)) + f('Stress capacity', E.stressCapacity(S)) +
+      '</div><div>' + f('Permanent rads', S.rads) + f('Unit morale', E.unitMorale(S) + ' (group)') + '</div></div></div>';
+
+    h += '<div class="ps-band">Skills</div><div class="ps-box"><div class="ps-sk">' +
+      (skills.length ? skills.map(function (k) {
+        return '<div><span>' + esc(k) + '</span><span>' + S.skills[k] + '</span></div>';
+      }).join('') : '<div>&mdash;</div>') + '</div></div>';
+
+    h += '<div class="ps-band">Specialties</div><div class="ps-box"><div class="ps-sp">' +
+      (S.specialties.length ? S.specialties.map(function (sp) {
+        return '<div>' + esc(sp) + '</div>';
+      }).join('') : '<div>&mdash;</div>') + '</div></div>';
+
+    h += '<div class="ps-band">Life path</div><div class="ps-box"><table class="ps-hist">' +
+      '<tr><th>Term</th><th>Career</th><th>Years</th><th>Outcome</th></tr>' +
+      S.terms.map(function (t, i) {
+        var out = [];
+        if (t.promoted) out.push('promoted');
+        if (t.specialtyGained) out.push(t.specialtyGained);
+        if (t.atWarSpecialty) out.push(t.atWarSpecialty);
+        if (t.ageEffect) out.push(t.ageEffect + ' reduced');
+        return '<tr><td>' + (i + 1) + '</td><td>' + esc(t.career.name) +
+          (t.officerArea ? ' (' + esc(E.findCareer(S, t.officerArea).career.name) + ')' : '') +
+          '</td><td>' + (t.years || '--') + '</td><td>' + esc(out.join(', ')) + '</td></tr>';
+      }).join('') + '</table></div>';
+
+    h += '<div class="ps-band">Gear</div><div class="ps-box"><div class="ps-gear">' +
+      (gs ? gs.gear.filter(function (g, i) { return S.gearPicks[i]; }) : []).map(function (g) {
+        return '<div>' + esc(g) + '</div>';
+      }).join('') +
+      '<div>' + ration(S.rations, 'ration') + ' of food</div><div>' + ration(S.water, 'ration') + ' of water</div>' +
+      '<div>' + ration(S.ammo, 'round') + ' of ammo (currency)</div><div>Uniform or civilian clothing, canteen</div>' +
+      '</div></div>';
+
+    h += '<div class="ps-band">The person</div><div class="ps-box">' +
+      f('Moral code', S.moralCode) + f('Big dream', S.bigDream) +
+      f('Buddy', S.buddy) + f('How you met', S.howMet) + f('Appearance', S.appearance) + '</div>';
+
+    h += '<div class="ps-foot">Twilight: 2000 is a trade mark of Free League Publishing. ' +
+      'This is an unofficial, fan-made character generator, not affiliated with or endorsed by the rights holders. ' +
+      'All game rules and content remain the property of their respective owners.</div>';
+    h += '</div></div>';
+    return h;
+  }
+
+  // ---------------- actions ----------------
+  var A = {};
+  A.set = function (k, v) { S[k] = v; };
+  A.setField = function (k, v) { S[k] = v; render(); };
+  A.rerender = function () { render(); };
+  A.go = function (p) {
+    if (p === 'terms' && !S.sub) S.sub = 'pick';
+    S.phase = p; render();
+  };
+  A.restart = function () { fresh(); lastView = null; render(); };
+  A.__peek = function () { return S; };
+
+  function rollName() {
+    var pool = DATA.names.names[S.nationality] || DATA.names.names['United States'];
+    return S.rng.pick(pool.given) + ' ' + S.rng.pick(pool.family);
+  }
+  A.randName = function () {
+    S.name = rollName();
+    S.nickname = S.rng.pick(DATA.names.nicknames);
+    var n = document.querySelector('.name-inp'), k = document.querySelector('.nick-inp');
+    if (n) n.value = S.name;            // written straight to the inputs: no re-render, so
+    if (k) k.value = S.nickname;        // nothing else the user was typing gets clobbered
+  };
+  A.toggleMilitia = function () { S.localMilitia = !S.localMilitia; render(); };
+
+  A.attrUp = function (a) { E.raiseAttr(S, a); render(); };
+  A.attrDown = function (a) { E.lowerAttr(S, a); render(); };
+  A.toggleTrade = function () {
+    if (S.tradedDown) E.undoTradeDown(S);
+    else {
+      // trade the first attribute still sitting at C; the player can move it after
+      for (var i = 0; i < E.ATTRS.length; i++) if (E.tradeDown(S, E.ATTRS[i])) break;
+    }
+    render();
+  };
+
+  A.rollChildhood = function () {
+    var d = S.rng.d6();
+    A.childhood(d, d);
+  };
+  A.childhood = function (d6, rolled) {
+    var row = DATA.core.childhood.table[d6 - 1];
+    S.childhoodRow = row;
+    S.childhood = row.name;
+    S.childhoodRoll = rolled || null;
+    S.childhoodSkill = null;
+    S.childhoodSpecialty = null;
+    render();
+  };
+  A.resetChildhood = function () {
+    if (S.childhoodSkill) E.lowerSkill(S, S.childhoodSkill);
+    if (S.childhoodSpecialty) S.specialties.splice(S.specialties.indexOf(S.childhoodSpecialty), 1);
+    S.childhood = null; S.childhoodRow = null; S.childhoodRoll = null;
+    S.childhoodSkill = null; S.childhoodSpecialty = null;
+    render();
+  };
+  A.childhoodSkill = function (sk) {
+    if (S.childhoodSkill) E.lowerSkill(S, S.childhoodSkill);
+    E.raiseSkill(S, sk);
+    S.childhoodSkill = sk;
+    render();
+  };
+  A.rollChildSpec = function () {
+    var d = S.rng.d6();
+    S.childhoodSpecRoll = d;
+    S.childhoodSpecialty = S.childhoodRow.specialties[d - 1];
+    E.gainSpecialty(S, S.childhoodSpecialty);
+    render();
+  };
+
+  A.pickCareer = function (k) {
+    if (k !== 'officer') { startTerm(k, null); return; }
+    // An officer serves in a functional area and must qualify for that too, so the
+    // area is asked for before the term starts.
+    var areas = E.officerAreas(S);
+    if (areas.length === 1) { startTerm(k, areas[0].key); return; }
+    S.pendingCareer = k;
+    S.askArea = areas;
+    render();
+  };
+  A.pickArea = function (areaKey) { startTerm('officer', areaKey); };
+  A.cancelArea = function () { S.askArea = null; S.pendingCareer = null; render(); };
+  function startTerm(k, area) {
+    S.pendingCareer = null; S.pendingArea = null; S.askArea = null;
+    E.beginTerm(S, k, area);
+    S.sub = 'train';
+    render();
+  }
+
+  A.increase = function (sk) { E.takeIncrease(S, sk); render(); };
+  A.undoIncrease = function () { E.undoIncrease(S); render(); };
+  A.toPromotion = function () { S.sub = 'promote'; render(); };
+
+  A.promote = function (sk) {
+    var pr = E.promotionRoll(S, sk);
+    if (!pr.ok) { S.current.specialtyGained = null; }
+    render();
+  };
+  A.rollSpec = function (tableIdx) {
+    var t = E.specialtyTables(S)[tableIdx];
+    var sp = E.rollSpecialty(S, t.table);
+    S.current.specialtyRoll = sp.roll;
+    if (sp.duplicate) {
+      S.current.duplicateSpecialty = sp.specialty;
+    } else {
+      applyGain(sp.specialty, false);
+    }
+    render();
+  };
+  A.chooseSpec = function (name) { applyGain(name, true); render(); };
+  function applyGain(name, chosen) {
+    var cur = S.current;
+    E.gainSpecialty(S, name);
+    cur.specialtyGained = name;
+    cur.specialtyChosen = chosen;
+    cur.duplicateSpecialty = null;
+    var rankBefore = S.rankIndex, cufBefore = S.cuf;
+    E.applyPromotion(S);
+    if (S.rankIndex !== rankBefore) cur.rankGained = E.rankName(S);
+    if (S.cuf !== cufBefore) cur.cufGained = S.cuf;
+  }
+
+  A.toAge = function () {
+    S.sub = 'age';
+    E.ageTerm(S);
+    render();
+  };
+  A.ageHit = function (a) { E.applyAgeEffect(S, a); render(); };
+  A.rollWar = function () {
+    E.warRoll(S);
+    // The prison check belongs to closeTerm, but the player should see it on this
+    // screen, so it is previewed here and the engine's own roll is suppressed.
+    var cur = S.current;
+    if (cur.group.key === 'crime' && !cur.warRoll.war) {
+      var d = S.rng.d6();
+      cur.prisonPending = { roll: d, prison: d % 2 === 1 };
+    }
+    render();
+  };
+  A.nextTerm = function () {
+    var war = S.current.warRoll.war;
+    E.closeTerm(S);          // reuses current.prisonPending, so prison is not re-rolled
+    if (war) { E.beginAtWar(S); S.phase = 'atwar'; S.sub = null; }
+    else { S.sub = 'pick'; }
+    render();
+  };
+
+  A.atWarIncrease = function (sk) {
+    if (!E.canTakeAtWarIncrease(S, sk)) return;
+    E.raiseSkill(S, sk);
+    S.current.increases.push(sk);
+    render();
+  };
+  A.undoAtWar = function () {
+    var n = S.current.increases.pop();
+    if (n) E.lowerSkill(S, n);
+    render();
+  };
+  A.rollAtWarSpec = function () {
+    var sp = E.rollSpecialty(S, E.atWarSpecialtyTable(S));
+    S.current.atWarSpecRoll = sp.roll;
+    if (sp.duplicate) {
+      // "Re-roll if you get a specialty you already have" -- re-roll until it lands
+      // on a free one, then fall back to any free specialty if the column is exhausted.
+      var guard = 0, table = E.atWarSpecialtyTable(S);
+      while (sp.duplicate && guard++ < 30) sp = E.rollSpecialty(S, table);
+      if (sp.duplicate) {
+        var all = [];
+        Object.keys(DATA.skills.specialties).forEach(function (g) {
+          DATA.skills.specialties[g].forEach(function (x) {
+            if (S.specialties.indexOf(x.name) < 0) all.push(x.name);
+          });
+        });
+        if (all.length) { sp = { specialty: S.rng.pick(all), roll: '--', duplicate: false }; }
+      }
+      S.current.atWarChosen = true;
+      S.current.atWarSpecRoll = sp.roll;
+    }
+    S.current.atWarSpecialty = sp.specialty;
+    E.gainSpecialty(S, sp.specialty);
+    render();
+  };
+  A.finishAtWar = function () {
+    E.closeAtWar(S);
+    S.phase = 'finish'; S.sub = null;
+    render();
+  };
+
+  A.gear = function (i) { S.gearPicks[i] = !S.gearPicks[i]; render(); };
+  A.rollSupplies = function () { E.rollFinalSupplies(S); render(); };
+  A.finish = function () { S.phase = 'done'; S.sub = null; render(); };
+
+  // ---------------- randomise ----------------
+  A.randomise = function () {
+    fresh();
+    S.nationality = S.rng.pick(DATA.core.nationality.options);
+    S.localMilitia = S.rng.next() < 0.12;
+    S.name = rollName();
+    S.nickname = S.rng.pick(DATA.names.nicknames);
+
+    if (S.rng.next() < 0.3) E.tradeDown(S, S.rng.pick(E.ATTRS));
+    var g = 0;
+    while (S.attrIncreasesLeft > 0 && g++ < 40) {
+      var a = S.rng.pick(E.ATTRS);
+      if (E.canRaiseAttr(S, a)) E.raiseAttr(S, a);
+      else if (!E.ATTRS.filter(function (x) { return E.canRaiseAttr(S, x); }).length) break;
+    }
+
+    A.childhood(S.rng.d6(), S.rng.d6());
+    A.childhoodSkill(S.rng.pick(S.childhoodRow.skills));
+    A.rollChildSpec();
+
+    var guard = 0;
+    while (!S.war && guard++ < 15) {
+      var opts = E.careerOptions(S).filter(function (o) { return o.ok; });
+      if (!opts.length) break;
+      var choice = S.prisonNext
+        ? E.careerOptions(S).filter(function (o) { return o.career.key === 'prisoner'; })[0]
+        : S.rng.pick(opts);
+      var area = null;
+      if (choice.career.key === 'officer') {
+        var areas = E.officerAreas(S);
+        if (!areas.length) continue;
+        area = S.rng.pick(areas).key;
+      }
+      E.beginTerm(S, choice.career.key, area);
+      var pool = E.termSkillOptions(S, S.current.career, S.current.group);
+      if (S.current.firstMilitary) E.takeIncrease(S, 'Ranged Combat');
+      var ig = 0;
+      while (E.increasesRemaining(S) > 0 && ig++ < 30) {
+        var free = pool.filter(function (p) { return E.canTakeIncrease(S, p); });
+        if (!free.length) {
+          free = DATA.skills.skills.map(function (s) { return s.name; })
+            .filter(function (p) { return E.canTakeIncrease(S, p); });
+          if (!free.length) break;
+        }
+        E.takeIncrease(S, S.rng.pick(free));
+      }
+      if (S.current.increases.length) {
+        var pr = E.promotionRoll(S, S.rng.pick(S.current.increases));
+        if (pr.ok) {
+          var tables = E.specialtyTables(S);
+          var sp = E.rollSpecialty(S, S.rng.pick(tables).table);
+          S.current.specialtyRoll = sp.roll;
+          if (sp.duplicate) {
+            var all = [];
+            Object.keys(DATA.skills.specialties).forEach(function (gg) {
+              DATA.skills.specialties[gg].forEach(function (x) {
+                if (S.specialties.indexOf(x.name) < 0) all.push(x.name);
+              });
+            });
+            applyGain(all.length ? S.rng.pick(all) : sp.specialty, true);
+          } else {
+            applyGain(sp.specialty, false);
+          }
+        }
+      }
+      E.ageTerm(S);
+      if (S.current.ageRoll.effect && E.ageEffectPossible(S)) {
+        E.applyAgeEffect(S, S.rng.pick(E.ATTRS.filter(function (x) { return S.attrs[x] !== 'D'; })));
+      }
+      E.warRoll(S);
+      E.closeTerm(S);
+    }
+
+    E.beginAtWar(S);
+    var forced = E.atWarForcedSkill(S);
+    if (forced && E.canTakeAtWarIncrease(S, forced)) { E.raiseSkill(S, forced); S.current.increases.push(forced); }
+    var ag = 0;
+    while (S.current.increases.length < 2 && ag++ < 30) {
+      var free2 = DATA.skills.skills.map(function (s) { return s.name; })
+        .filter(function (p) { return E.canTakeAtWarIncrease(S, p); });
+      if (!free2.length) break;
+      var pick2 = S.rng.pick(free2);
+      E.raiseSkill(S, pick2); S.current.increases.push(pick2);
+    }
+    A.rollAtWarSpec();
+    E.closeAtWar(S);
+
+    var gsrc = E.gearSource(S);
+    if (gsrc) for (var i = 0; i < gsrc.gear.length; i++) S.gearPicks[i] = true;
+    E.rollFinalSupplies(S);
+    S.moralCode = S.rng.pick(DATA.core.moral_code_examples);
+    S.bigDream = S.rng.pick(DATA.core.big_dream_examples);
+    S.phase = 'done'; S.sub = null;
+    lastView = null;
+    render();
+  };
+
+  window.A = A;
+
+  // theme
+  window.setTheme = function (t) {
+    if (t === 'light') document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', t);
+    try { localStorage.setItem('twilight2000_theme', t); } catch (e) {}
+    syncTheme();
+  };
+  function syncTheme() {
+    var t = document.documentElement.getAttribute('data-theme') || 'light';
+    var b = document.querySelectorAll('.tt-btn');
+    for (var i = 0; i < b.length; i++) b[i].classList.toggle('active', b[i].getAttribute('data-tv') === t);
+  }
+
+  window.addEventListener('DOMContentLoaded', function () {
+    main = document.getElementById('main');
+    track = document.getElementById('track');
+    fresh();
+    render();
+    syncTheme();
+  });
+})();
+
+</script>
+<script>
+/* Visit beacon -> log-visit edge function (mirrors lib/events.ts logVisit).
+   This is a static page, so the site-wide VisitLogger never fires here; this
+   sends a page='/twilight2000-generator' visit. ip_address is captured server-side,
+   geo comes from the geo_* cookies set by middleware, and ip_hash = SHA-256(geo_ip)
+   so it dedups with the rest of the system. Respects the owner opt-out
+   (localStorage tapestry_no_log = '1'). */
+(function () {
+  try {
+    if (localStorage.getItem('tapestry_no_log') === '1') return;
+    var ck = function (n) { var m = document.cookie.match('(^|; )' + n + '=([^;]*)'); return m ? decodeURIComponent(m[2]) : null; };
+    var sid = localStorage.getItem('tapestry_session_id');
+    if (!sid) { sid = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random()); localStorage.setItem('tapestry_session_id', sid); }
+    var lat = ck('geo_lat'), lng = ck('geo_lng');
+    var send = function (ipHash) {
+      fetch('https://jbudzglgtxeoaufpejrv.supabase.co/functions/v1/log-visit', {
+        method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          session_id: String(sid).slice(0, 64),
+          page: '/twilight2000-generator',
+          referrer: document.referrer || null,
+          country_code: ck('geo_country'),
+          region: ck('geo_region'),
+          city: ck('geo_city'),
+          latitude: lat ? parseFloat(lat) : null,
+          longitude: lng ? parseFloat(lng) : null,
+          ip_hash: ipHash
+        })
+      }).catch(function () {});
+    };
+    var rawIP = ck('geo_ip');
+    if (rawIP && crypto.subtle) {
+      crypto.subtle.digest('SHA-256', new TextEncoder().encode(rawIP)).then(function (buf) {
+        send(Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, '0'); }).join(''));
+      }).catch(function () { send(null); });
+    } else { send(null); }
+  } catch (e) {}
+})();
+</script>
+<!-- Report an issue (Xero Sum Games) -->
+<div class="no-print" style="text-align:center;padding:28px 16px 40px;">
+  <button type="button" id="xsg-ri-open" style="background:#16161a;border:1px solid #3a3a42;color:#e8e5dd;font:600 14px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:10px 20px;border-radius:9px;cursor:pointer;letter-spacing:.02em;">Report an issue</button>
+</div>
+<div id="xsg-ri-modal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.66);align-items:center;justify-content:center;padding:16px;">
+  <div role="dialog" aria-modal="true" aria-label="Report an issue" style="background:#16161a;color:#f2efe6;max-width:440px;width:100%;border:1px solid #33333a;border-radius:14px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.5);font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;">
+    <h3 style="margin:0 0 6px;font-size:19px;">Report an issue</h3>
+    <p style="margin:0 0 14px;color:#a8a49a;font-size:14px;">Spotted a bug or something off? Tell us what happened.</p>
+    <form id="xsg-ri-form">
+      <textarea id="xsg-ri-msg" required rows="4" placeholder="What went wrong?" style="width:100%;box-sizing:border-box;padding:10px;border:1px solid #3a3a42;border-radius:9px;background:#0e0e10;color:#f2efe6;font:inherit;font-size:15px;resize:vertical;"></textarea>
+      <input id="xsg-ri-email" type="email" placeholder="Your email (optional - so we can reply with a fix)" style="width:100%;box-sizing:border-box;margin-top:10px;padding:10px;border:1px solid #3a3a42;border-radius:9px;background:#0e0e10;color:#f2efe6;font:inherit;font-size:15px;" />
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;">
+        <button type="button" id="xsg-ri-cancel" style="padding:9px 16px;border:1px solid #3a3a42;border-radius:9px;background:transparent;color:#f2efe6;font:inherit;font-size:14px;cursor:pointer;">Cancel</button>
+        <button type="submit" id="xsg-ri-send" style="padding:9px 18px;border:none;border-radius:9px;background:#c8a06a;color:#14130f;font:inherit;font-size:14px;font-weight:700;cursor:pointer;">Send report</button>
+      </div>
+      <p id="xsg-ri-status" style="margin:12px 0 0;font-size:14px;min-height:1em;"></p>
+    </form>
+  </div>
+</div>
+<script>
+(function(){
+  var SOURCE='twilight2000-generator';
+  var EP='https://jbudzglgtxeoaufpejrv.supabase.co/functions/v1/report-issue';
+  var $=function(id){return document.getElementById(id);};
+  var modal=$('xsg-ri-modal'),form=$('xsg-ri-form'),msg=$('xsg-ri-msg'),email=$('xsg-ri-email'),status=$('xsg-ri-status'),send=$('xsg-ri-send');
+  function show(){modal.style.display='flex';setTimeout(function(){msg.focus();},40);}
+  function hide(){modal.style.display='none';}
+  $('xsg-ri-open').addEventListener('click',show);
+  $('xsg-ri-cancel').addEventListener('click',hide);
+  modal.addEventListener('click',function(e){if(e.target===modal)hide();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&modal.style.display!=='none')hide();});
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var m=msg.value.trim();if(!m)return;
+    send.disabled=true;status.style.color='#a8a49a';status.textContent='Sending...';
+    fetch(EP,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source:SOURCE,message:m,email:(email.value.trim()||null),page_url:location.href})})
+      .then(function(r){return r.json().catch(function(){return null;});})
+      .then(function(d){
+        if(d&&d.ok){status.style.color='#7fc458';status.textContent='Thanks - report sent!';form.reset();setTimeout(hide,1400);}
+        else if(d&&d.error==='invalid_email'){status.style.color='#e07a5f';status.textContent='That email looks off - fix it or leave it blank.';}
+        else{status.style.color='#e07a5f';status.textContent='Something went wrong. Please try again.';}
+      })
+      .catch(function(){status.style.color='#e07a5f';status.textContent='Something went wrong. Please try again.';})
+      .finally(function(){send.disabled=false;});
+  });
+})();
+</script>
+</body></html>

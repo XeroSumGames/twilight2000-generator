@@ -400,9 +400,13 @@
     S.groupTermCount[t.group.key] = (S.groupTermCount[t.group.key] || 0) + 1;
     if (t.warRoll && t.warRoll.war) S.war = true;
     // Crime: if war did not break out, an odd D6 sends you to prison next term.
+    // The UI shows this roll on the same screen as the war roll, so if it has already
+    // been made it is reused rather than rolled a second time.
     if (t.group.key === 'crime' && !S.war) {
-      var d = S.rng.d6();
-      t.prisonRoll = { roll: d, prison: d % 2 === 1 };
+      t.prisonRoll = t.prisonPending || (function () {
+        var d = S.rng.d6();
+        return { roll: d, prison: d % 2 === 1 };
+      })();
       S.prisonNext = t.prisonRoll.prison;
     } else {
       S.prisonNext = false;

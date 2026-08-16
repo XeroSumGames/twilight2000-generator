@@ -1,0 +1,39 @@
+{
+  "_note": "Not book content. Period-plausible name pools for the random-name button, grouped by the nationalities the rank table covers. Nicknames are the sort of thing a squad hands out.",
+  "names": {
+    "United States": {
+      "given": ["James", "Robert", "Michael", "Mary", "Patricia", "Linda", "David", "Richard", "Susan", "Karen",
+                "Thomas", "Charles", "Nancy", "Betty", "Joseph", "Daniel", "Sandra", "Donna", "Mark", "Paul",
+                "Carol", "Ruth", "Steven", "Kenneth", "Sharon", "Michelle", "Gary", "Larry", "Deborah", "Angela"],
+      "family": ["Keller", "Ronson", "Diaz", "Ramirez", "Sullivan", "Novak", "Brennan", "Cole", "Ward", "Hayes",
+                 "Mercer", "Doyle", "Whitfield", "Boone", "Vance", "Kowalczyk", "Rhodes", "Salazar", "Tate", "Mills"]
+    },
+    "Soviet Union": {
+      "given": ["Aleksandr", "Sergei", "Dmitri", "Yuri", "Nikolai", "Pavel", "Viktor", "Anatoly", "Irina", "Svetlana",
+                "Natalya", "Olga", "Galina", "Mikhail", "Boris", "Andrei", "Valentina", "Larisa", "Igor", "Lyudmila"],
+      "family": ["Ivanov", "Petrov", "Sokolov", "Volkov", "Popov", "Morozov", "Lebedev", "Kuznetsov", "Orlov", "Zaytsev",
+                 "Fedorov", "Belov", "Titov", "Gordeyev", "Rybakov", "Shashkov"]
+    },
+    "Poland": {
+      "given": ["Andrzej", "Kasia", "Marek", "Tomasz", "Piotr", "Jacek", "Agnieszka", "Ewa", "Zofia", "Krzysztof",
+                "Wojciech", "Halina", "Janusz", "Bogdan", "Marta", "Stanislaw"],
+      "family": ["Kowalski", "Nowak", "Wisniewski", "Wojcik", "Kaminski", "Zielinski", "Szymanski", "Dabrowski",
+                 "Lewandowski", "Mazur", "Krawczyk", "Piotrowski", "Grabowski", "Pawlak"]
+    },
+    "Sweden": {
+      "given": ["Erik", "Lars", "Anders", "Karin", "Ingrid", "Nils", "Gustav", "Britta", "Sven", "Malin",
+                "Bjorn", "Astrid", "Henrik", "Elsa", "Ove", "Sigrid"],
+      "family": ["Andersson", "Johansson", "Karlsson", "Nilsson", "Eriksson", "Larsson", "Olsson", "Persson",
+                 "Lindqvist", "Bergstrom", "Sandberg", "Holm", "Ahlgren", "Ekstrom"]
+    },
+    "Other / local": {
+      "given": ["Hana", "Tomas", "Milan", "Vera", "Ana", "Josef", "Katarina", "Dragan", "Elena", "Petar",
+                "Ilse", "Klaus", "Renate", "Dieter", "Magda", "Stefan"],
+      "family": ["Novotny", "Horvath", "Petrovic", "Vargas", "Weber", "Schneider", "Bauer", "Fischer",
+                 "Kovac", "Toth", "Marek", "Simic", "Lang", "Reiter"]
+    }
+  },
+  "nicknames": ["Doc", "Preacher", "Two-Fer", "Sparks", "Bear", "Ghost", "Tex", "Ace", "Rook", "Grinder",
+                "Pockets", "Halftrack", "Radar", "Mouse", "Shovel", "Cactus", "Padre", "Wrench", "Whisper",
+                "Bulldog", "Nickel", "Trigger", "Cinder", "Salty", "Patch", "Gears", "Hitch", "Smoke"]
+}
