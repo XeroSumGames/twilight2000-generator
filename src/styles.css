@@ -35,7 +35,61 @@ body{margin:0;background:var(--panel);color:var(--ink);font-family:var(--ff-b);f
 .hdr-rand:hover{background:var(--amber)}
 @media(max-width:720px){.theme-toggle,.hdr-rand{position:static;transform:none;display:inline-flex;margin:12px 6px 0}}
 
-.main{max-width:1000px;margin:0 auto;padding:20px 18px 60px}
+/* ---- the report frame ----
+   The generator presents itself as a NATO intelligence assessment of the subject.
+   An intel product can profile anyone, which a service record cannot -- the book's
+   characters can be American, Soviet, Polish, Swedish or civilian. */
+.classbar{background:#111;color:#e8e2c8;font-family:var(--ff-m);font-size:13px;
+  letter-spacing:.34em;text-transform:uppercase;text-align:center;padding:5px 10px}
+.classbar b{color:#d4674a;letter-spacing:.34em}
+
+.main{max-width:1180px;margin:0 auto;padding:20px 18px 60px}
+/* form on the left, running summary pinned on the right */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px;align-items:start}
+@media(max-width:980px){.layout{grid-template-columns:1fr}}
+
+.sidebar{position:sticky;top:12px}
+@media(max-width:980px){
+  .sidebar{position:static}
+  .sb-body{display:none}
+  .sidebar.open .sb-body{display:block}
+  .sb-toggle{display:block}
+}
+.sb-toggle{display:none;width:100%;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--r);color:var(--ink);font-family:var(--ff-m);font-size:14px;
+  letter-spacing:.1em;text-transform:uppercase;padding:10px;cursor:pointer;margin-bottom:10px}
+.sb{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+  padding:13px;margin-bottom:12px}
+.sb-t{font-family:var(--ff-m);font-size:14px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:9px}
+.sb-row{display:flex;justify-content:space-between;gap:8px;font-size:13px;padding:2px 0}
+.sb-row .k{color:var(--dust)}
+.sb-row .v{font-family:var(--ff-m);font-weight:700;color:var(--ink)}
+.sb-row .v.hot{color:var(--amber)}
+/* every line traces back to where it came from, so the summary is also the audit trail */
+.sb-src{font-size:11px;color:var(--dim);margin:-1px 0 4px 0;font-style:italic}
+.sb-empty{font-size:12px;color:var(--dim);font-style:italic}
+.sb-budget{font-family:var(--ff-m);font-size:15px;font-weight:700;color:var(--amber);
+  text-align:center;padding:6px;background:var(--card);border-radius:var(--r);margin-bottom:8px}
+
+/* the war clock: how close the D8 is to ending your peacetime */
+.clock{margin-top:6px}
+.clock-bar{display:flex;gap:2px}
+.clock-cell{flex:1;height:11px;border:1px solid var(--line);border-radius:1px;background:var(--surface)}
+.clock-cell.on{background:var(--rust);border-color:var(--rust)}
+.clock-note{font-size:11px;color:var(--dust);margin-top:5px;line-height:1.35}
+
+/* free navigation: the track is clickable, and gated steps say so */
+.track-item{cursor:default}
+.track-item.nav{cursor:pointer}
+.track-item.nav:hover{border-color:var(--accent);color:var(--ink)}
+.locked-note{font-size:12px;color:var(--dust);background:var(--card);
+  border-left:3px solid var(--amber);padding:9px 12px;border-radius:0 var(--r) var(--r) 0;margin:10px 0}
+.ro{opacity:.9}
+.ro .opt{cursor:default}
+.ro .opt:hover{background:transparent}
+/* a read-only step still renders in full; it just cannot be touched */
+.ro .opt,.ro .btn,.ro input,.ro select,.ro .at-btn{pointer-events:none}
 
 .track{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
 .track-item{font-family:var(--ff-m);font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding:5px 10px;border:1px solid var(--line);border-radius:var(--r)}

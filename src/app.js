@@ -5,12 +5,19 @@
 (function () {
   'use strict';
   var E = window.T2KEngine;
-  var main, track;
+  var main, track, sidebar;
 
+  // Report section numbers, in the voice of the intelligence assessment the generator
+  // presents itself as.
   var PHASES = [
-    ['who', 'Who You Are'], ['attrs', 'Attributes'], ['childhood', 'Childhood'],
-    ['terms', 'Life Path'], ['atwar', 'At War'], ['finish', 'Final Details'], ['done', 'Dossier']
+    ['who', '1. Identification'], ['attrs', '2. Capabilities'], ['childhood', '3. Background'],
+    ['terms', '4. Service History'], ['atwar', '5. Wartime'], ['finish', '6. Disposition'],
+    ['done', 'Assessment']
   ];
+
+  // Steps whose answers everything later is built on. Once a term has been played they
+  // can still be READ freely, but changing one discards the life path that followed.
+  var GATED = ['who', 'attrs', 'childhood'];
 
   var S = null;
 
@@ -29,16 +36,31 @@
     S.pendingCareer = null;
     S.pendingArea = null;
     S.gearPicks = {};
+    S.snaps = {};          // phase/term -> state photograph, for free navigation
+    S.readOnly = false;    // viewing a gated step that has already been committed
+    S.confirmUnlock = null;
     window.__S = S;
   }
+
+  // A step is reachable once it has been started; the whole track is reachable once
+  // the character is finished.
+  function reached(phase) {
+    var order = PHASES.map(function (p) { return p[0]; });
+    var here = order.indexOf(S.phase), there = order.indexOf(phase);
+    if (S.phase === 'done') return true;
+    return there <= here;
+  }
+  function isGated(phase) { return GATED.indexOf(phase) >= 0 && S.terms.length > 0; }
 
   // ---------------- render ----------------
   function renderTrack() {
     var idx = 0;
     for (var i = 0; i < PHASES.length; i++) if (PHASES[i][0] === S.phase) idx = i;
     track.innerHTML = PHASES.map(function (p, i) {
-      var cls = 'track-item' + (i === idx ? ' active' : (i < idx ? ' done' : ''));
-      return '<div class="' + cls + '">' + esc(p[1]) + '</div>';
+      var can = reached(p[0]);
+      var cls = 'track-item' + (i === idx ? ' active' : (i < idx ? ' done' : '')) + (can ? ' nav' : '');
+      var click = can ? ' onclick="A.nav(\'' + p[0] + '\')"' : '';
+      return '<div class="' + cls + '"' + click + '>' + esc(p[1]) + '</div>';
     }).join('');
   }
 
@@ -53,9 +75,119 @@
     else if (S.phase === 'atwar') h = viewAtWar();
     else if (S.phase === 'finish') h = viewFinish();
     else h = viewDossier();
+    if (S.readOnly) h = lockedBanner(S.phase) + '<div class="ro">' + h + '</div>';
     main.innerHTML = h + (S.phase === 'done' ? printSheet() : '');
-    var view = S.phase + '/' + (S.sub || '');
+    if (sidebar) sidebar.innerHTML = viewSidebar();
+    var view = S.phase + '/' + (S.sub || '') + '/' + (S.readOnly ? 'ro' : '');
     if (view !== lastView) { lastView = view; window.scrollTo(0, 0); }
+  }
+
+  // ---- the running summary: where every point went, and what it cost ----
+  function sbRow(k, v, src, hot) {
+    return '<div class="sb-row"><span class="k">' + k + '</span><span class="v' +
+      (hot ? ' hot' : '') + '">' + v + '</span></div>' +
+      (src ? '<div class="sb-src">' + esc(src) + '</div>' : '');
+  }
+  function viewSidebar() {
+    var h = '<button class="sb-toggle" onclick="A.toggleSb()">Summary &mdash; where my points went</button><div class="sb-body">';
+
+    h += '<div class="sb"><div class="sb-t">Subject</div>' +
+      sbRow('Name', esc(S.name || '&mdash;')) +
+      sbRow('Nationality', esc(S.nationality || '&mdash;')) +
+      sbRow('Age', S.age) +
+      sbRow('Terms', S.terms.length) +
+      (S.rankIndex >= 0 ? sbRow('Rank', esc(E.rankName(S))) : '') +
+      '</div>';
+
+    if (S.attrIncreasesLeft > 0) {
+      h += '<div class="sb-budget">' + S.attrIncreasesLeft + ' attribute increase' +
+        (S.attrIncreasesLeft === 1 ? '' : 's') + ' unspent</div>';
+    }
+    h += '<div class="sb"><div class="sb-t">Attributes</div>' +
+      E.ATTRS.map(function (a) {
+        var src = 'baseline C';
+        if (S.tradedDown === a) src = 'traded down to D for an extra increase';
+        else if (E.rank(S.attrs[a]) > E.rank('C')) src = 'raised ' + (E.rank(S.attrs[a]) - E.rank('C')) + ' from C';
+        var aged = [];
+        for (var i = 0; i < S.terms.length; i++) if (S.terms[i].ageEffect === a) aged.push(S.terms[i].termNo);
+        if (aged.length) src += '; ageing cost 1 in term ' + aged.join(', ');
+        return sbRow(a, S.attrs[a] + ' <span style="color:var(--dust);font-weight:400">D' + E.dieSize(S.attrs[a]) + '</span>', src);
+      }).join('') +
+      sbRow('CUF', S.cuf, S.cuf === 'D' ? 'starts at D' : 'raised by promotion in military or intelligence service') +
+      '</div>';
+
+    var keys = Object.keys(S.skills).sort();
+    h += '<div class="sb"><div class="sb-t">Skills</div>';
+    h += keys.length ? keys.map(function (k) {
+      return sbRow(esc(k), S.skills[k], skillSource(k));
+    }).join('') : '<div class="sb-empty">Nothing learned yet.</div>';
+    h += '</div>';
+
+    h += '<div class="sb"><div class="sb-t">Specialties</div>';
+    h += S.specialties.length ? S.specialties.map(function (sp) {
+      return sbRow(esc(sp), '&#10003;', specialtySource(sp));
+    }).join('') : '<div class="sb-empty">None yet.</div>';
+    h += '</div>';
+
+    if (S.terms.length || S.phase === 'terms') h += warClockHTML();
+
+    if (S.war || S.phase === 'finish' || S.phase === 'done') {
+      h += '<div class="sb"><div class="sb-t">Derived</div>' +
+        sbRow('Hit capacity', E.hitCapacity(S), 'STR D' + E.dieSize(S.attrs.STR) + ' + AGL D' + E.dieSize(S.attrs.AGL) + ', divided by 4') +
+        sbRow('Stress capacity', E.stressCapacity(S), 'INT D' + E.dieSize(S.attrs.INT) + ' + EMP D' + E.dieSize(S.attrs.EMP) + ', divided by 4') +
+        (S.rads ? sbRow('Permanent rads', S.rads, 'D6 at the end of creation') : '') +
+        '</div>';
+    }
+    return h + '</div>';
+  }
+
+  // Where a skill level came from -- childhood, which term, or the war.
+  function skillSource(name) {
+    var bits = [];
+    if (S.childhoodSkill === name) bits.push('childhood: ' + S.childhood);
+    for (var i = 0; i < S.terms.length; i++) {
+      var t = S.terms[i], n = 0;
+      for (var j = 0; j < (t.increases || []).length; j++) if (t.increases[j] === name) n++;
+      if (n) bits.push(t.atWar ? 'At War +' + n : 'term ' + t.termNo + ' (' + t.career.name + ') +' + n);
+    }
+    if (S.current) {
+      var m = 0;
+      for (var k = 0; k < S.current.increases.length; k++) if (S.current.increases[k] === name) m++;
+      if (m) bits.push('this term +' + m);
+    }
+    return bits.join('; ');
+  }
+  function specialtySource(name) {
+    if (S.childhoodSpecialty === name) return 'childhood: ' + S.childhood;
+    for (var i = 0; i < S.terms.length; i++) {
+      var t = S.terms[i];
+      if (t.specialtyGained === name) return 'term ' + t.termNo + ' promotion (' + t.career.name + ')';
+      if (t.atWarSpecialty === name) return 'the At War term';
+    }
+    return '';
+  }
+
+  // The war clock. War breaks out when a D8 rolls UNDER the number of terms served, so
+  // the odds tighten every term and by term 9 it is certain. Shown before the choice,
+  // not reported after it.
+  function warClockHTML() {
+    if (S.war) {
+      return '<div class="sb"><div class="sb-t">War</div>' +
+        '<div class="clock-note" style="color:var(--rust)"><b>War has broken out.</b> The peacetime record is closed.</div></div>';
+    }
+    var served = S.terms.length;
+    var next = served + 1;                 // the roll at the end of the term now beginning
+    var chance = Math.max(0, Math.min(8, next - 1));
+    var cells = '';
+    for (var i = 1; i <= 8; i++) cells += '<div class="clock-cell' + (i <= chance ? ' on' : '') + '"></div>';
+    var note = S.localMilitia
+      ? 'Local militia: the war reaches your home ground by the end of your first term, whatever the dice say.'
+      : (chance === 0
+          ? 'No war roll can fire after your first term.'
+          : chance + ' of 8 &mdash; a D8 under ' + next + ' at the end of this term and the world ends.');
+    return '<div class="sb"><div class="sb-t">War clock</div><div class="clock">' +
+      '<div class="clock-bar">' + cells + '</div>' +
+      '<div class="clock-note">' + note + '</div></div></div>';
   }
 
   // ---- shared panels ----
@@ -114,8 +246,8 @@
   // ---- 1. who you are ----
   function viewWho() {
     var nats = DATA.core.nationality.options;
-    return '<div class="step-h">Who You Are</div>' +
-      '<div class="step-p">You are 18 years old and the world has not ended yet. Nationality does not change how you are built &mdash; only your gear, your language and what your rank is called.</div>' +
+    return '<div class="step-h">1. Subject Identification</div>' +
+      '<div class="step-p">Subject is eighteen years of age at the opening of this file. Nationality is recorded for equipment and language purposes only; it does not affect the assessment of capability.</div>' +
       '<div class="panel"><div class="panel-t">Name and nation</div><div class="grid2">' +
       '<div><label class="lbl">Name</label><input class="txt name-inp" value="' + esc(S.name) +
         '" oninput="A.set(\'name\',this.value)" placeholder="Your character">' +
@@ -139,8 +271,8 @@
   // ---- 2. attributes ----
   function viewAttrs() {
     var done = S.attrIncreasesLeft === 0;
-    return '<div class="step-h">Attributes</div>' +
-      '<div class="step-p">Everyone starts at C in all four. You rolled 2D3 for how many increases you get &mdash; spend them where you like. A is the top of human capacity; the die you roll goes up with the grade.</div>' +
+    return '<div class="step-h">2. Assessment of Capabilities</div>' +
+      '<div class="step-p">All subjects are graded from a baseline of C. Available uplift was assessed at 2D3. Grade A represents the top of human capacity. The summary on the right records where every point went.</div>' +
       attrsPanel(true) +
       '<div class="panel"><div class="panel-t">Trade one down</div>' +
       '<div class="opt' + (S.tradedDown ? ' on' : '') + '" onclick="A.toggleTrade()">' +
@@ -155,8 +287,8 @@
 
   // ---- 3. childhood ----
   function viewChildhood() {
-    var h = '<div class="step-h">Childhood</div>' +
-      '<div class="step-p">Roll a D6 for what your childhood was like, or choose it. Then take one of its skills at level D and roll a D6 for a specialty.</div>';
+    var h = '<div class="step-h">3. Formative Background</div>' +
+      '<div class="step-p">Where the subject was raised, and what it left them able to do. Roll D6 or state it. One listed skill is recorded at grade D, and a D6 determines the specialty acquired.</div>';
     if (!S.childhood) {
       h += '<div class="panel"><div class="panel-t">Where you grew up</div>' +
         DATA.core.childhood.table.map(function (c) {
@@ -214,15 +346,30 @@
   }
 
   function viewTerms() {
-    var h = '<div class="step-h">Term ' + (S.terms.length + 1) + '</div>' +
-      '<div class="step-p">' + statusLine() + '. Each term runs D6 years. Pick a career you qualify for, take your training, then find out whether you were promoted, whether the years told on you, and whether the war has started.</div>';
+    var h = '<div class="step-h">4. Service History &mdash; Term ' + (S.terms.length + 1) + '</div>' +
+      '<div class="step-p">' + statusLine() + '. Each term of service runs D6 years. The war clock on the right shows how close the world is to ending.</div>';
     h += historyHTML();
 
-    if (!S.sub || S.sub === 'pick') return h + viewPickCareer() + skillsPanel();
+    if (!S.sub || S.sub === 'pick') return h + riskWarning() + viewPickCareer() + skillsPanel();
     if (S.sub === 'train') return h + viewTrain() + skillsPanel();
     if (S.sub === 'promote') return h + viewPromote() + skillsPanel();
     if (S.sub === 'age') return h + viewAge() + skillsPanel();
     return h;
+  }
+
+  // The two gambles of serving another term, stated BEFORE the term is chosen.
+  function riskWarning() {
+    var next = S.terms.length + 1;
+    var bits = [];
+    if (next >= 2) {
+      bits.push('A D8 under <b>' + next + '</b> at the end of this term and an attribute drops a grade for good.');
+    }
+    if (!S.war) {
+      if (S.localMilitia && next === 1) bits.push('As local militia, the war reaches you by the end of this term regardless.');
+      else if (next >= 2) bits.push('A second D8 under <b>' + next + '</b> and the war starts, closing the peacetime record.');
+    }
+    if (!bits.length) return '';
+    return '<div class="note warn"><b>Serving term ' + next + '.</b> ' + bits.join(' ') + '</div>';
   }
 
   function viewPickCareer() {
@@ -594,9 +741,67 @@
   A.setField = function (k, v) { S[k] = v; render(); };
   A.rerender = function () { render(); };
   A.go = function (p) {
+    // Photograph the step being left, the first time it is left: that is the state to
+    // come back to if it is ever re-opened.
+    if (GATED.indexOf(S.phase) >= 0 && !S.snaps[S.phase]) S.snaps[S.phase] = E.snapshot(S);
     if (p === 'terms' && !S.sub) S.sub = 'pick';
-    S.phase = p; render();
+    S.phase = p; S.readOnly = false; S.confirmUnlock = null;
+    render();
   };
+  A.toggleSb = function () {
+    var el = document.getElementById('sidebar');
+    if (el) el.classList.toggle('open');
+  };
+
+  // ---- free navigation ----
+  // Anything reached can be revisited and read. A step that later steps were built on
+  // opens read-only, with an explicit offer to unlock that says what it will cost.
+  A.nav = function (p) {
+    if (!reached(p)) return;
+    S.phase = p;
+    S.confirmUnlock = null;
+    S.readOnly = isGated(p);
+    if (p === 'terms' && !S.sub) S.sub = 'pick';
+    render();
+  };
+  A.askUnlock = function (p) { S.confirmUnlock = p; render(); };
+  A.cancelUnlock = function () { S.confirmUnlock = null; render(); };
+  A.unlock = function (p) {
+    var snap = S.snaps[p];
+    if (!snap) return;
+    E.restore(S, snap);        // exact rewind, including the RNG's position
+    S.phase = p;
+    S.readOnly = false;
+    S.confirmUnlock = null;
+    S.sub = null;
+    lastView = null;
+    render();
+  };
+  // Exactly what re-opening this step would throw away, worked out by diffing the
+  // snapshot against now -- so the warning is never vaguer than the truth.
+  function discardCost(p) {
+    var snap = S.snaps[p];
+    if (!snap) return 'nothing';
+    var bits = [];
+    var lostTerms = S.terms.length - (snap.terms ? snap.terms.length : 0);
+    if (lostTerms > 0) bits.push(lostTerms + ' term' + (lostTerms === 1 ? '' : 's') + ' of service');
+    if (S.childhood && !snap.childhood) bits.push('your childhood record');
+    var lostSpec = S.specialties.length - (snap.specialties ? snap.specialties.length : 0);
+    if (lostSpec > 0) bits.push(lostSpec + ' specialt' + (lostSpec === 1 ? 'y' : 'ies'));
+    return bits.length ? bits.join(', ') : 'nothing';
+  }
+  function lockedBanner(p) {
+    if (S.confirmUnlock === p) {
+      return '<div class="locked-note"><b>Re-opening this discards ' + esc(discardCost(p)) +
+        '.</b> Everything after this point was built on these answers, so it cannot be kept.' +
+        '<div class="btn-row tight" style="margin-top:10px">' +
+        '<button class="btn ghost" onclick="A.cancelUnlock()">Keep it as it is</button>' +
+        '<button class="btn" onclick="A.unlock(\'' + p + '\')">Discard and re-open</button></div></div>';
+    }
+    return '<div class="locked-note">On the record. Your service history was built on this, so it reads only.' +
+      '<div class="btn-row tight" style="margin-top:8px">' +
+      '<button class="btn ghost" onclick="A.askUnlock(\'' + p + '\')">Amend the record&hellip;</button></div></div>';
+  }
   A.restart = function () { fresh(); lastView = null; render(); };
   A.__peek = function () { return S; };
 
@@ -895,6 +1100,7 @@
   window.addEventListener('DOMContentLoaded', function () {
     main = document.getElementById('main');
     track = document.getElementById('track');
+    sidebar = document.getElementById('sidebar');
     fresh();
     render();
     syncTheme();

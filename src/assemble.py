@@ -61,6 +61,7 @@ HTML = """<!doctype html>
 <script>/* apply saved theme before paint to avoid a flash */(function(){try{if(localStorage.getItem('twilight2000_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
 </head><body>
 <a class="backbar no-print" href="https://thetable.xerosumgames.com/">&larr; The Table</a>
+<div class="classbar no-print"><b>&#9679;</b> NATO Intelligence &mdash; Subject Assessment <b>&#9679;</b></div>
 <div class="hdr">
   <div class="theme-toggle" role="group" aria-label="Colour theme">
     <button class="tt-btn" data-tv="light" onclick="setTheme('light')">Light</button>
@@ -72,7 +73,10 @@ HTML = """<!doctype html>
 </div>
 <div class="main">
   <div class="track" id="track"></div>
-  <div id="main"></div>
+  <div class="layout">
+    <div id="main"></div>
+    <div class="sidebar no-print" id="sidebar"></div>
+  </div>
 </div>
 <div class="footer no-print" style="text-align:center;padding:26px 16px;font-size:12px;color:#8d897c;line-height:1.6">
   <p class="seo-intro">A free, browser-based character generator for Twilight: 2000 4th Edition. It runs the complete life path: attributes over a baseline of C, childhood, military and civilian career terms with skill increases, promotion rolls, specialties, ageing and the war roll, then the At War term, hit and stress capacity, and starting gear.</p>

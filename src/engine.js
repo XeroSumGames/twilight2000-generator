@@ -468,6 +468,37 @@
     return t;
   }
 
+  // ---------- snapshots, for free navigation ----------
+  // Re-opening an earlier step has to UNDO everything that followed it, and this is a
+  // dice-driven life path -- rank, skills, CUF and the war clock all accumulate, so
+  // there is no way to compute backwards. Instead the state is photographed before each
+  // step and restoring is exact. The RNG's position is saved too, so replaying from a
+  // restore point does not reuse the dice the discarded terms already spent.
+  // `snaps` is detached along with DATA and rng: a snapshot must never contain the
+  // other snapshots, or each one doubles the size of the next.
+  function snapshot(S) {
+    var data = S.DATA, rng = S.rng, snaps = S.snaps;
+    S.DATA = null; S.rng = null; S.snaps = null;
+    var copy;
+    try { copy = JSON.parse(JSON.stringify(S)); }
+    finally { S.DATA = data; S.rng = rng; S.snaps = snaps; }
+    copy.__rng = rng.s;
+    return copy;
+  }
+  // Mutates S in place so every existing reference to it stays valid.
+  function restore(S, snap) {
+    var data = S.DATA, rng = S.rng, snaps = S.snaps;
+    for (var k in S) if (Object.prototype.hasOwnProperty.call(S, k)) delete S[k];
+    var fresh = JSON.parse(JSON.stringify(snap));
+    for (var j in fresh) if (Object.prototype.hasOwnProperty.call(fresh, j)) S[j] = fresh[j];
+    delete S.__rng;
+    S.DATA = data;
+    S.rng = rng;
+    S.snaps = snaps;
+    rng.s = (snap.__rng >>> 0) || 1;
+    return S;
+  }
+
   // ---------- derived ----------
   function hitCapacity(S) { return Math.ceil((dieSize(S.attrs.STR) + dieSize(S.attrs.AGL)) / 4); }
   function stressCapacity(S) { return Math.ceil((dieSize(S.attrs.INT) + dieSize(S.attrs.EMP)) / 4); }
@@ -519,6 +550,7 @@
     draftApplies: draftApplies, atWarColumn: atWarColumn, atWarSpecialtyTable: atWarSpecialtyTable,
     atWarForcedSkill: atWarForcedSkill, beginAtWar: beginAtWar,
     canTakeAtWarIncrease: canTakeAtWarIncrease, closeAtWar: closeAtWar,
+    snapshot: snapshot, restore: restore,
     hitCapacity: hitCapacity, stressCapacity: stressCapacity, unitMorale: unitMorale,
     gearSource: gearSource, rollFinalSupplies: rollFinalSupplies
   };
