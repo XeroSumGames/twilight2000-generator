@@ -1,0 +1,207 @@
+{
+  "_source": "Twilight: 2000 4E Player's Manual, printed p36-38 (pdf 23-25).",
+  "_note": "Civilian careers are police, crime, intelligence services, blue collar work, education and white-collar work (printed p35). Civilian careers have no military rank and no CUF gain -- EXCEPT intelligence careers, which do increase CUF on a promotion (printed p31 step 7).",
+  "groups": [
+    {
+      "key": "police",
+      "name": "Police",
+      "type": "civilian",
+      "blurb": "Peacekeepers slid into paramilitary support as the war brought civilization to its knees.",
+      "careers": [
+        {
+          "key": "police_officer",
+          "name": "Police Officer",
+          "requirements": { "text": "No D attribute, no terms in prison", "no_d_attribute": true, "forbid_terms_in": { "career": "prisoner" } },
+          "skills": ["Close Combat", "Ranged Combat"],
+          "specialties": ["Sidearms", "Melee", "Runner", "Racer", "Biker", "Scout"],
+          "gear": ["Pistol", "D6 reloads", "Handcuffs", "Baton (club)", "Patrol car with half a tank of gasoline"]
+        },
+        {
+          "key": "detective",
+          "name": "Detective",
+          "requirements": { "text": "EMP B+, at least one term as Police Officer", "all": [{ "attr": "EMP", "min": "B" }], "terms_in": { "career": "police_officer", "min": 1 } },
+          "skills": ["Ranged Combat", "Recon", "Persuasion"],
+          "specialties": ["Infiltrator", "Interrogator", "Intelligence", "Investigator", "Locksmith", "Linguist"],
+          "gear": ["Pistol", "D6 reloads", "Lockpicks"]
+        },
+        {
+          "key": "swat",
+          "name": "SWAT",
+          "requirements": { "text": "STR and AGL B+, at least one term as Police Officer", "all": [{ "attr": "STR", "min": "B" }, { "attr": "AGL", "min": "B" }], "terms_in": { "career": "police_officer", "min": 1 } },
+          "skills": ["Close Combat", "Ranged Combat", "Recon"],
+          "specialties": ["Martial Artist", "Rifleman", "Sniper", "Combat Awareness", "Infiltrator", "Scout"],
+          "gear": ["Assault rifle or submachinegun", "D6 reloads", "Night vision goggles", "Flak jacket and helmet", "Knife", "Personal medkit"]
+        }
+      ]
+    },
+    {
+      "key": "crime",
+      "name": "Crime",
+      "type": "civilian",
+      "blurb": "Not an ideal career, but with civilization in rapid decline some see it as the only option.",
+      "_prison_rule": "After a term in a career of crime, if war does NOT break out, roll a D6 -- on an odd result you must spend the next term in prison.",
+      "careers": [
+        {
+          "key": "gang_member",
+          "name": "Gang Member",
+          "requirements": { "text": "STR and AGL C+", "all": [{ "attr": "STR", "min": "C" }, { "attr": "AGL", "min": "C" }] },
+          "skills": ["Close Combat", "Ranged Combat"],
+          "specialties": ["Brawler", "Melee", "Killer", "Martial Artist", "Rifleman", "Sidearms"],
+          "gear": ["Any civilian firearm", "D6 reloads", "Knife"]
+        },
+        {
+          "key": "burglar",
+          "name": "Burglar",
+          "requirements": { "text": "AGL and INT C+", "all": [{ "attr": "AGL", "min": "C" }, { "attr": "INT", "min": "C" }] },
+          "skills": ["Recon"],
+          "specialties": ["Brawler", "Sidearms", "Mountaineer", "Infiltrator", "Electrician", "Locksmith"],
+          "gear": ["Pistol or revolver", "D6 reloads", "Lockpick set (TECH +2)"]
+        },
+        {
+          "key": "hustler",
+          "name": "Hustler",
+          "requirements": { "text": "INT and EMP C+", "all": [{ "attr": "INT", "min": "C" }, { "attr": "EMP", "min": "C" }] },
+          "skills": ["Recon", "Persuasion"],
+          "specialties": ["Sidearms", "Infiltrator", "Scout", "Interrogator", "Psy Ops", "Trader"],
+          "gear": ["Pistol or revolver", "D6 reloads"]
+        },
+        {
+          "key": "prisoner",
+          "name": "Prisoner",
+          "requirements": { "text": "--" },
+          "skills": ["Close Combat"],
+          "specialties": ["Brawler", "Melee", "Killer", "Ranger", "SERE Training", "Scrounger"],
+          "gear": ["Any civilian firearm", "D6 reloads", "Knife"]
+        }
+      ]
+    },
+    {
+      "key": "intelligence",
+      "name": "Intelligence",
+      "type": "intelligence",
+      "blurb": "Agents in the field gathering information, assassinating enemy leaders, assisting partisans.",
+      "careers": [
+        {
+          "key": "agent",
+          "name": "Agent",
+          "requirements": { "text": "INT B+, at least one term in Education", "all": [{ "attr": "INT", "min": "B" }], "terms_in": { "group": "education", "min": 1 } },
+          "skills": ["Ranged Combat", "Recon", "Persuasion"],
+          "specialties": ["Intelligence", "Locksmith", "Investigator", "Scout", "Psy Ops", "Sidearms"],
+          "gear": ["Pistol", "D6 reloads", "Lockpick set", "Knife or explosives", "Personal medkit"]
+        },
+        {
+          "key": "assassin",
+          "name": "Assassin",
+          "requirements": { "text": "EMP C or D, AGL B+, one or more terms as an Agent", "all": [{ "attr": "AGL", "min": "B" }], "max": [{ "attr": "EMP", "max": "C" }], "terms_in": { "career": "agent", "min": 1 } },
+          "skills": ["Close Combat", "Ranged Combat"],
+          "specialties": ["Killer", "Interrogator", "Sniper", "Martial Artist", "Improvised Munitions", "Infiltrator"],
+          "gear": ["Sniper rifle or submachinegun (suppressed)", "D6 reloads", "Radio or binoculars", "Knife or explosives", "Personal medkit"]
+        },
+        {
+          "key": "paramilitary",
+          "name": "Paramilitary",
+          "requirements": { "text": "STR and AGL B+, one or more terms in the military", "all": [{ "attr": "STR", "min": "B" }, { "attr": "AGL", "min": "B" }], "terms_in": { "group": "military", "min": 1 } },
+          "skills": ["Heavy Weapons", "Ranged Combat", "Survival"],
+          "specialties": ["Brawler", "Rifleman", "Machinegunner", "Combat Engineer", "Improvised Munitions", "Tactician"],
+          "gear": ["Assault rifle, LMG or ATRL", "D6 reloads", "Knife or D6 hand grenades", "Personal medkit"]
+        }
+      ]
+    },
+    {
+      "key": "blue_collar",
+      "name": "Blue Collar",
+      "type": "blue_collar",
+      "blurb": "The vast majority of the population, determined to take back control of what is left of the world.",
+      "careers": [
+        {
+          "key": "driver",
+          "name": "Driver",
+          "requirements": { "text": "AGL B+", "all": [{ "attr": "AGL", "min": "B" }] },
+          "skills": ["Tech"],
+          "specialties": ["Biker", "Boatman", "Navigator", "Pilot", "Racer", "Tanker"],
+          "gear": ["Any civilian firearm", "D3 reloads", "Any civilian car or truck", "Vehicle tools"]
+        },
+        {
+          "key": "farmer",
+          "name": "Farmer",
+          "requirements": { "text": "None" },
+          "skills": ["Survival"],
+          "specialties": ["Cook", "Farmer", "Fisher", "Hunter", "Forager", "Rider"],
+          "gear": ["Any civilian firearm", "D3 reloads", "Pickup truck", "Basic toolkit", "2D6 rations of food"]
+        },
+        {
+          "key": "mechanic",
+          "name": "Mechanic",
+          "requirements": { "text": "None" },
+          "skills": ["Tech"],
+          "specialties": ["Blacksmith", "Gunsmith", "Locksmith", "Mechanic", "Scrounger", "Improvised Munitions"],
+          "gear": ["Any civilian firearm", "D3 reloads", "Pickup truck", "Basic tools", "Vehicle tools or weapon tools"]
+        },
+        {
+          "key": "construction",
+          "name": "Construction",
+          "requirements": { "text": "STR B+", "all": [{ "attr": "STR", "min": "B" }] },
+          "skills": ["Close Combat", "Tech"],
+          "specialties": ["Brawler", "Builder", "Load Carrier", "Blacksmith", "Electrician", "Improvised Munitions"],
+          "gear": ["Any civilian firearm", "D3 reloads", "Crowbar", "Pickup truck", "Basic tools"]
+        }
+      ]
+    },
+    {
+      "key": "education",
+      "name": "Education",
+      "type": "education",
+      "blurb": "A direct path out of blue-collar jobs and into more lucrative white-collar work.",
+      "careers": [
+        {
+          "key": "liberal_arts",
+          "name": "Liberal Arts",
+          "requirements": { "text": "INT and EMP C+", "all": [{ "attr": "INT", "min": "C" }, { "attr": "EMP", "min": "C" }] },
+          "skills": ["Persuasion"],
+          "specialties": ["Historian", "Cook", "Linguist", "Musician", "Psy Ops", "Counselor"],
+          "gear": ["Any civilian firearm", "D3 reloads", "Dictionary in any language", "Bicycle"]
+        },
+        {
+          "key": "sciences",
+          "name": "Sciences",
+          "requirements": { "text": "INT B+", "all": [{ "attr": "INT", "min": "B" }] },
+          "skills": ["Tech"],
+          "specialties": ["Chemist", "Communication", "Computers", "Electrician", "Scientist", "Linguist"],
+          "gear": ["Any civilian firearm", "D3 reloads", "Bicycle or 2WD car with half a tank of gasoline"]
+        }
+      ]
+    },
+    {
+      "key": "white_collar",
+      "name": "White Collar",
+      "type": "white_collar",
+      "blurb": "Professional, desk, managerial or administrative work.",
+      "careers": [
+        {
+          "key": "doctor",
+          "name": "Doctor",
+          "requirements": { "text": "Two terms in Education (Sciences), EMP B+", "all": [{ "attr": "EMP", "min": "B" }], "terms_in": { "career": "sciences", "min": 2 } },
+          "skills": ["Medical Aid", "Persuasion"],
+          "specialties": ["Linguist", "Combat Medic", "Counselor", "Field Surgeon", "General Practitioner", "Veterinarian"],
+          "gear": ["Any civilian firearm", "D3 reloads", "D6 personal medkits", "Pain relievers", "Surgical instruments"]
+        },
+        {
+          "key": "professor",
+          "name": "Professor",
+          "requirements": { "text": "Two terms in Education (Liberal Arts), INT B+", "all": [{ "attr": "INT", "min": "B" }], "terms_in": { "career": "liberal_arts", "min": 2 } },
+          "skills": ["Persuasion"],
+          "specialties": ["Historian", "Chemist", "Scientist", "Linguist", "Psy Ops", "Teacher"],
+          "gear": ["Any civilian firearm", "D3 reloads", "2WD car with half a tank of gasoline"]
+        },
+        {
+          "key": "manager",
+          "name": "Manager",
+          "requirements": { "text": "One term in Education (any), EMP B+", "all": [{ "attr": "EMP", "min": "B" }], "terms_in": { "group": "education", "min": 1 } },
+          "skills": ["Tech", "Command", "Persuasion"],
+          "specialties": ["Quartermaster", "Computers", "Frontline Leader", "Logistician", "Teacher", "Counselor"],
+          "gear": ["Any civilian firearm", "D3 reloads", "Pocket calculator", "2WD car with half a tank of gasoline"]
+        }
+      ]
+    }
+  ]
+}

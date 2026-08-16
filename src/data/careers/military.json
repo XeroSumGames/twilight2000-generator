@@ -1,0 +1,109 @@
+{
+  "_source": "Twilight: 2000 4E Player's Manual, printed p32-33 (pdf 19-20).",
+  "key": "military",
+  "name": "Military",
+  "type": "military",
+  "blurb": "Five broad functional areas, shared across every nation's armed forces.",
+  "_notes": [
+    "OFFICERS must qualify for BOTH the Officer career path and the functional area they want to serve in. They also choose which of the two columns to use for each career bonus.",
+    "FIRST TERM: in your first term of military service one of your two skill increases must be RANGED COMBAT, no matter what skills are listed.",
+    "At the rank of Corporal or above you can always choose COMMAND as a skill increase."
+  ],
+  "careers": [
+    {
+      "key": "combat_arms",
+      "name": "Combat Arms",
+      "requirements": { "text": "STR or AGL B+", "any": [{ "attr": "STR", "min": "B" }, { "attr": "AGL", "min": "B" }] },
+      "starting_rank": "Private",
+      "skills": ["Close Combat", "Heavy Weapons", "Ranged Combat", "Recon"],
+      "specialties": ["Rifleman", "Redleg", "Tanker", "Machinegunner", "Launcher Crew", "Combat Engineer"],
+      "gear": [
+        "Assault rifle, LMG or ATRL",
+        "D6 reloads",
+        "Flak jacket and helmet",
+        "Knife or D6 hand grenades",
+        "Personal medkit",
+        "Backpack"
+      ]
+    },
+    {
+      "key": "combat_support",
+      "name": "Combat Support",
+      "requirements": { "text": "INT B+", "all": [{ "attr": "INT", "min": "B" }] },
+      "starting_rank": "Private First Class",
+      "skills": ["Recon", "Survival", "Tech"],
+      "specialties": ["Intelligence", "Linguist", "Communications", "NBC", "Psy Ops", "Interrogator"],
+      "gear": [
+        "Assault rifle",
+        "D6 reloads",
+        "Flak jacket and helmet",
+        "Knife or D6 hand grenades",
+        "Personal medkits",
+        "MOPP suit or manpack radio",
+        "Backpack"
+      ]
+    },
+    {
+      "key": "combat_service_support",
+      "name": "Combat Service Support",
+      "requirements": { "text": "None" },
+      "starting_rank": "Private First Class",
+      "skills": ["Medical Aid", "Tech"],
+      "specialties": ["Mechanic", "Gunsmith", "Electrician", "Computers", "Combat Medic", "Field Surgeon"],
+      "gear": [
+        "Assault rifle",
+        "D6 reloads",
+        "Flak jacket and helmet",
+        "Knife or D6 hand grenades",
+        "Personal medkit",
+        "Basic tools",
+        "Vehicle tools or weapon tools or surgical instruments",
+        "Backpack"
+      ]
+    },
+    {
+      "key": "special_operations",
+      "name": "Special Operations",
+      "requirements": {
+        "text": "STR and AGL B+, INT C+, at least one term in Combat Arms",
+        "all": [{ "attr": "STR", "min": "B" }, { "attr": "AGL", "min": "B" }, { "attr": "INT", "min": "C" }],
+        "terms_in": { "career": "combat_arms", "min": 1 }
+      },
+      "starting_rank": "Sergeant",
+      "skills": ["Close Combat", "Ranged Combat", "Recon", "Survival"],
+      "specialties": ["Paratrooper", "Ranger", "Infiltrator", "Combat Awareness", "Sniper", "SERE Training"],
+      "gear": [
+        "Assault rifle or sniper rifle",
+        "Any pistol or D6 hand grenades or rifle-mounted grenade launcher",
+        "D6 reloads for each weapon",
+        "Binoculars or night vision goggles",
+        "Flak jacket and helmet",
+        "Knife",
+        "Personal medkit",
+        "Backpack"
+      ]
+    },
+    {
+      "key": "officer",
+      "name": "Officer",
+      "requirements": {
+        "text": "INT B+, no D attribute, at least one term in Education, requirements for the functional area",
+        "all": [{ "attr": "INT", "min": "B" }],
+        "no_d_attribute": true,
+        "terms_in": { "group": "education", "min": 1 },
+        "_also": "Must also meet the requirements of the functional area served in."
+      },
+      "starting_rank": "Second Lieutenant",
+      "skills": ["Ranged Combat", "Command", "Persuasion"],
+      "specialties": ["Sidearms", "Intelligence", "Tactician", "Logistician", "Frontline Leader", "Quartermaster"],
+      "gear": [
+        "Pistol or submachine gun",
+        "D6 reloads",
+        "Manpack radio or night vision goggles",
+        "Flak jacket",
+        "Knife or D6 hand grenades",
+        "Personal medkit"
+      ]
+    }
+  ]
+}

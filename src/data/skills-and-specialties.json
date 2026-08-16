@@ -1,0 +1,122 @@
+{
+  "_source": "Twilight: 2000 4E Player's Manual, printed p48-51 (pdf 35-38).",
+  "_note": "Twelve core skills. Specialties are categorised by the skill they are most commonly used with, but you do NOT need a level in that skill to hold the specialty.",
+
+  "skills": [
+    { "name": "Close Combat",  "attr": "STR", "desc": "Fighting an enemy up close, with or without a melee weapon." },
+    { "name": "Heavy Weapons", "attr": "STR", "desc": "Machine guns, rocket launchers, mortars, tank guns and howitzers. Mounted weapons use AGL; artillery uses INT." },
+    { "name": "Stamina",       "attr": "STR", "desc": "Physical toughness and endurance -- marching hard, resisting disease or cold, clinging to life." },
+    { "name": "Driving",       "attr": "AGL", "desc": "Motorcycles, cars, APCs and tanks." },
+    { "name": "Mobility",      "attr": "AGL", "desc": "Jumping, climbing, running fast, thrown weapons." },
+    { "name": "Ranged Combat", "attr": "AGL", "desc": "Hand-held ranged weapons -- pistols, bows, submachineguns, assault rifles." },
+    { "name": "Recon",         "attr": "INT", "desc": "Spotting concealed enemies, avoiding ambushes, moving silently." },
+    { "name": "Survival",      "attr": "INT", "desc": "Finding food and shelter in the wild." },
+    { "name": "Tech",          "attr": "INT", "desc": "Repairing gear, scavenging parts, crafting with a workshop." },
+    { "name": "Command",       "attr": "EMP", "desc": "Leading survivors, getting someone incapacitated by stress back on their feet. Sets unit morale." },
+    { "name": "Medical Aid",   "attr": "EMP", "desc": "Helping the injured back up and saving the life of a fallen comrade." },
+    { "name": "Persuasion",    "attr": "EMP", "desc": "Charm, threats or reason -- making others see things your way." }
+  ],
+
+  "generally_available": ["Stamina", "Mobility", "Driving"],
+  "_generally_available_note": "printed p31 step 6 -- these three may always be chosen for a term's skill increases, whatever the career lists.",
+
+  "specialties": {
+    "Close Combat": [
+      { "name": "Brawler",       "desc": "+1 to CLOSE COMBAT in unarmed close combat." },
+      { "name": "Melee",         "desc": "+1 to CLOSE COMBAT with hand-to-hand weapons -- knives, bayonets, clubs." },
+      { "name": "Killer",        "desc": "You can kill an incapacitated person outright with no negative effects." },
+      { "name": "Martial Artist","desc": "Your unarmed attacks have a crit threshold of 3 instead of 4." }
+    ],
+    "Heavy Weapons": [
+      { "name": "Machinegunner", "desc": "+1 to HEAVY WEAPONS firing machine guns." },
+      { "name": "Launcher Crew", "desc": "+1 to HEAVY WEAPONS firing grenade and missile launchers." },
+      { "name": "Redleg",        "desc": "+1 to HEAVY WEAPONS firing mortars and howitzers." },
+      { "name": "Vehicle Gunner","desc": "+1 to HEAVY WEAPONS firing vehicle-mounted cannons." }
+    ],
+    "Stamina": [
+      { "name": "Builder",       "desc": "+1 to STAMINA for base building." },
+      { "name": "Load Carrier",  "desc": "Carry four more encumbrance units in combat gear and four more in your backpack." },
+      { "name": "NBC",           "desc": "+1 to STAMINA for all infection rolls, including radiation and chemical agents. Identifies NBC effects." },
+      { "name": "Ranger",        "desc": "+1 to STAMINA for marching, resisting hypothermia and other hardships." },
+      { "name": "SERE Training", "desc": "+1 to STAMINA to resist interrogation, Psy Ops, bluffing and torture." }
+    ],
+    "Driving": [
+      { "name": "Biker",   "desc": "+1 to DRIVING motorcycles and bicycles, on or off-road." },
+      { "name": "Boatman", "desc": "+1 to DRIVING boats, including sail and rowed boats." },
+      { "name": "Pilot",   "desc": "+1 to DRIVING fixed- and rotary-wing aircraft." },
+      { "name": "Racer",   "desc": "+1 to DRIVING wheeled vehicles except motorcycles." },
+      { "name": "Tanker",  "desc": "+1 to DRIVING tracked vehicles." }
+    ],
+    "Mobility": [
+      { "name": "Diver",       "desc": "+1 to MOBILITY when swimming, including SCUBA." },
+      { "name": "Mountaineer", "desc": "+1 to MOBILITY for rappelling, ascender-climbing and knot-tying." },
+      { "name": "Paratrooper", "desc": "+1 to MOBILITY for skydiving and for reducing falling damage." },
+      { "name": "Pitcher",     "desc": "+1 to MOBILITY for thrown weapons, including knives and grenades." },
+      { "name": "Rider",       "desc": "+1 to MOBILITY riding, and negates the penalty for shooting from horseback." },
+      { "name": "Runner",      "desc": "+1 to MOBILITY for running." }
+    ],
+    "Ranged Combat": [
+      { "name": "Archer",   "desc": "+1 to RANGED COMBAT with bows and crossbows." },
+      { "name": "Reloader", "desc": "+1 to RANGED COMBAT rolls made to reload your firearm." },
+      { "name": "Rifleman", "desc": "+1 to RANGED COMBAT with assault rifles, carbines, submachine guns and shotguns." },
+      { "name": "Sidearms", "desc": "+1 to RANGED COMBAT with revolvers and pistols." },
+      { "name": "Sniper",   "desc": "+1 to RANGED COMBAT with sniper rifles and hunting rifles." }
+    ],
+    "Recon": [
+      { "name": "Combat Awareness", "desc": "Draw two initiative cards instead of one and choose which to act on." },
+      { "name": "Forward Observer", "desc": "Your RECON counts as one step higher when directing indirect fire." },
+      { "name": "Historian",        "desc": "Roll RECON at a new location to learn something significant that happened there." },
+      { "name": "Infiltrator",      "desc": "+1 to RECON when trying to remain undetected." },
+      { "name": "Intelligence",     "desc": "Roll RECON on spotting enemy troops and gear to learn their stats." },
+      { "name": "Investigator",     "desc": "Roll RECON when investigating a crime or battle scene for useful information." },
+      { "name": "Scout",            "desc": "+1 to RECON for spotting others and avoiding ambushes." }
+    ],
+    "Survival": [
+      { "name": "Cook",          "desc": "One extra ration of food when anyone in the group successfully forages, hunts or fishes." },
+      { "name": "Farmer",        "desc": "+1 to SURVIVAL for farming." },
+      { "name": "Fisher",        "desc": "+1 to SURVIVAL for fishing." },
+      { "name": "Forager",       "desc": "+1 to SURVIVAL for foraging to find food." },
+      { "name": "Navigator",     "desc": "+1 to SURVIVAL for navigation." },
+      { "name": "Hunter",        "desc": "+1 to SURVIVAL for hunting to obtain food." },
+      { "name": "Quartermaster", "desc": "+1 to SURVIVAL for making camp and establishing a home base." },
+      { "name": "Scrounger",     "desc": "+1 to SURVIVAL for scrounging." }
+    ],
+    "Tech": [
+      { "name": "Blacksmith",           "desc": "+1 to TECH for metalworking, forging, casting, molding and smelting." },
+      { "name": "Chemist",              "desc": "+1 to TECH for distilling grain alcohol for fuel. Identifies chemical substances." },
+      { "name": "Combat Engineer",      "desc": "+1 to TECH for placing and disarming mines and explosives, and to RECON to avoid mines." },
+      { "name": "Communications",       "desc": "+1 to TECH for radios, signal boosting, Morse, antennae and encryption gear." },
+      { "name": "Computers",            "desc": "+1 to TECH for using or tampering with computers." },
+      { "name": "Electrician",          "desc": "+1 to TECH for wiring, soldering, disabling and repairing electrical devices." },
+      { "name": "Gunsmith",             "desc": "+1 to TECH for repairing firearms." },
+      { "name": "Improvised Munitions", "desc": "+1 to TECH for making zip-guns and IEDs." },
+      { "name": "Locksmith",            "desc": "+1 to TECH for picking locks, cracking safes and disarming alarms." },
+      { "name": "Mechanic",             "desc": "+1 to TECH for repairing engines, vehicles, generators and pumps." },
+      { "name": "Scientist",            "desc": "Roll TECH on a phenomenon needing natural science knowledge for useful information." }
+    ],
+    "Command": [
+      { "name": "Frontline Leader", "desc": "+1 to COMMAND for helping someone incapacitated by stress. Does not affect unit morale." },
+      { "name": "Logistician",      "desc": "When base building you can roll COMMAND instead of any listed skill, with help." },
+      { "name": "Tactician",        "desc": "Roll COMMAND on spotting an enemy force to learn their organization and objectives." }
+    ],
+    "Medical Aid": [
+      { "name": "Combat Medic",         "desc": "+1 to MEDICAL AID for getting an incapacitated character back up. No effect on critical injuries." },
+      { "name": "Counselor",            "desc": "+1 to MEDICAL AID for counseling long-term mental trauma." },
+      { "name": "Field Surgeon",        "desc": "+1 to MEDICAL AID for treating critical injuries." },
+      { "name": "General Practitioner", "desc": "+1 to MEDICAL AID for treating disease, poison and NBC." },
+      { "name": "Veterinarian",         "desc": "+1 to MEDICAL AID for working on animals." }
+    ],
+    "Persuasion": [
+      { "name": "Linguist",     "desc": "You know another language well enough to pass as native on a successful PERSUASION roll." },
+      { "name": "Musician",     "desc": "+1 to PERSUASION where singing or playing an instrument helps." },
+      { "name": "Interrogator", "desc": "+1 to PERSUASION for extracting information from a prisoner." },
+      { "name": "Psy Ops",      "desc": "+1 to PERSUASION for changing someone's mind about an issue." },
+      { "name": "Teacher",      "desc": "+1 to PERSUASION for teaching someone a specialty." },
+      { "name": "Trader",       "desc": "+1 to PERSUASION when negotiating the price of an item." }
+    ]
+  },
+
+  "_unlisted_specialties": [
+    "Communication (Sciences career, printed p38) is spelled without the final S there, while the Tech specialty list (printed p51) prints Communications. Kept AS PRINTED in each place."
+  ]
+}
