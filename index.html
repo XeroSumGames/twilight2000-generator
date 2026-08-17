@@ -47,7 +47,7 @@ body{margin:0;background:var(--panel);color:var(--ink);font-family:var(--ff-b);f
 
 .hdr{position:relative;background:var(--surface);border-bottom:3px solid var(--accent);padding:14px 18px;text-align:center}
 .hdr-title{margin:0;font-family:var(--ff-d);font-size:30px;font-weight:700;letter-spacing:.02em;color:var(--ink);pointer-events:none}
-.hdr-sub{font-family:var(--ff-m);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--dust);pointer-events:none;margin-top:2px}
+.hdr-sub{font-family:var(--ff-m);font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:var(--dust);pointer-events:none;margin-top:2px}
 .theme-toggle{position:absolute;left:18px;top:50%;transform:translateY(-50%);display:inline-flex;border:1px solid var(--line);border-radius:20px;overflow:hidden;z-index:5}
 .tt-btn{background:transparent;border:0;color:var(--dust);font-family:var(--ff-m);font-size:14px;letter-spacing:.1em;padding:5px 12px;cursor:pointer}
 .tt-btn.active{background:var(--accent);color:#fff;font-weight:700}
@@ -59,7 +59,7 @@ body{margin:0;background:var(--panel);color:var(--ink);font-family:var(--ff-b);f
    The generator presents itself as a NATO intelligence assessment of the subject.
    An intel product can profile anyone, which a service record cannot -- the book's
    characters can be American, Soviet, Polish, Swedish or civilian. */
-.classbar{background:#111;color:#e8e2c8;font-family:var(--ff-m);font-size:13px;
+.classbar{background:#111;color:#e8e2c8;font-family:var(--ff-m);font-size:14px;
   letter-spacing:.34em;text-transform:uppercase;text-align:center;padding:5px 10px}
 .classbar b{color:#d4674a;letter-spacing:.34em}
 
@@ -82,13 +82,13 @@ body{margin:0;background:var(--panel);color:var(--ink);font-family:var(--ff-b);f
   padding:13px;margin-bottom:12px}
 .sb-t{font-family:var(--ff-m);font-size:14px;letter-spacing:.16em;text-transform:uppercase;
   color:var(--accent);border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:9px}
-.sb-row{display:flex;justify-content:space-between;gap:8px;font-size:13px;padding:2px 0}
+.sb-row{display:flex;justify-content:space-between;gap:8px;font-size:14px;padding:2px 0}
 .sb-row .k{color:var(--dust)}
 .sb-row .v{font-family:var(--ff-m);font-weight:700;color:var(--ink)}
 .sb-row .v.hot{color:var(--amber)}
 /* every line traces back to where it came from, so the summary is also the audit trail */
-.sb-src{font-size:11px;color:var(--dim);margin:-1px 0 4px 0;font-style:italic}
-.sb-empty{font-size:12px;color:var(--dim);font-style:italic}
+.sb-src{font-size:14px;color:var(--dim);margin:-1px 0 4px 0;font-style:italic}
+.sb-empty{font-size:14px;color:var(--dim);font-style:italic}
 .sb-budget{font-family:var(--ff-m);font-size:15px;font-weight:700;color:var(--amber);
   text-align:center;padding:6px;background:var(--card);border-radius:var(--r);margin-bottom:8px}
 
@@ -97,13 +97,13 @@ body{margin:0;background:var(--panel);color:var(--ink);font-family:var(--ff-b);f
 .clock-bar{display:flex;gap:2px}
 .clock-cell{flex:1;height:11px;border:1px solid var(--line);border-radius:1px;background:var(--surface)}
 .clock-cell.on{background:var(--rust);border-color:var(--rust)}
-.clock-note{font-size:11px;color:var(--dust);margin-top:5px;line-height:1.35}
+.clock-note{font-size:14px;color:var(--dust);margin-top:5px;line-height:1.35}
 
 /* free navigation: the track is clickable, and gated steps say so */
 .track-item{cursor:default}
 .track-item.nav{cursor:pointer}
 .track-item.nav:hover{border-color:var(--accent);color:var(--ink)}
-.locked-note{font-size:12px;color:var(--dust);background:var(--card);
+.locked-note{font-size:14px;color:var(--dust);background:var(--card);
   border-left:3px solid var(--amber);padding:9px 12px;border-radius:0 var(--r) var(--r) 0;margin:10px 0}
 .ro{opacity:.9}
 .ro .opt{cursor:default}
@@ -128,7 +128,7 @@ body{margin:0;background:var(--panel);color:var(--ink);font-family:var(--ff-b);f
 .at{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:10px 6px;text-align:center}
 .at-k{font-family:var(--ff-m);font-size:14px;letter-spacing:.1em;color:var(--dust)}
 .at-v{font-family:var(--ff-m);font-size:30px;font-weight:700;color:var(--ink);line-height:1.1}
-.at-d{font-family:var(--ff-m);font-size:12px;color:var(--amber)}
+.at-d{font-family:var(--ff-m);font-size:14px;color:var(--amber)}
 .at-btns{display:flex;gap:4px;justify-content:center;margin-top:6px}
 .at-btn{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);color:var(--dust);font-family:var(--ff-m);font-size:14px;width:26px;height:24px;cursor:pointer;padding:0}
 .at-btn:hover:not(:disabled){border-color:var(--accent);color:var(--ink)}
@@ -145,8 +145,8 @@ body{margin:0;background:var(--panel);color:var(--ink);font-family:var(--ff-b);f
 .opt-box{width:16px;height:16px;border:1px solid var(--line);border-radius:2px;flex:0 0 auto;margin-top:3px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff}
 .opt.on .opt-box{background:var(--accent);border-color:var(--accent)}
 .opt-n{font-size:14px}
-.opt-d{font-size:12px;color:var(--dust);line-height:1.35}
-.opt-x{font-family:var(--ff-m);font-size:12px;color:var(--rust)}
+.opt-d{font-size:14px;color:var(--dust);line-height:1.35}
+.opt-x{font-family:var(--ff-m);font-size:14px;color:var(--rust)}
 
 .txt,.sel{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);color:var(--ink);font-family:var(--ff-b);font-size:14px;padding:8px 10px;outline:none}
 .txt:focus,.sel:focus{border-color:var(--accent)}
@@ -163,29 +163,35 @@ body{margin:0;background:var(--panel);color:var(--ink);font-family:var(--ff-b);f
 .btn-row.tight{justify-content:flex-end;margin:10px 0 16px}
 
 /* term loop reporting */
-.roll{display:flex;align-items:baseline;gap:10px;font-family:var(--ff-m);font-size:13px;padding:8px 11px;border-left:3px solid var(--line);background:var(--card);border-radius:0 var(--r) var(--r) 0;margin-bottom:8px}
+.roll{display:flex;align-items:baseline;gap:10px;font-family:var(--ff-m);font-size:14px;padding:8px 11px;border-left:3px solid var(--line);background:var(--card);border-radius:0 var(--r) var(--r) 0;margin-bottom:8px}
 .roll.good{border-left-color:#4f7d3f}
 .roll.bad{border-left-color:var(--rust)}
 .roll-v{font-size:17px;font-weight:700}
 .roll-t{color:var(--dust);flex:1}
+/* the outcome of a roll, stated so it cannot be scrolled past or misread */
+.verdict{font-family:var(--ff-m);font-size:19px;font-weight:700;letter-spacing:.2em;
+  text-align:center;padding:10px;border-radius:var(--r);margin:4px 0 12px}
+.verdict.good{background:var(--accent);color:#fff}
+.verdict.bad{background:var(--rust);color:#fff}
+
 .dice{display:inline-flex;gap:5px;margin-left:4px}
-.die{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;border:1px solid var(--line);border-radius:var(--r);font-family:var(--ff-m);font-size:13px;font-weight:700;background:var(--surface)}
+.die{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;border:1px solid var(--line);border-radius:var(--r);font-family:var(--ff-m);font-size:14px;font-weight:700;background:var(--surface)}
 .die.hit{background:var(--accent);border-color:var(--accent);color:#fff}
 .term-hd{display:flex;align-items:baseline;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding-bottom:7px;margin-bottom:11px}
 .term-n{font-family:var(--ff-d);font-size:19px}
-.term-age{font-family:var(--ff-m);font-size:12px;color:var(--dust)}
+.term-age{font-family:var(--ff-m);font-size:14px;color:var(--dust)}
 .hist{margin-bottom:16px}
-.hist-row{display:flex;gap:10px;font-size:13px;padding:6px 0;border-bottom:1px solid var(--line)}
+.hist-row{display:flex;gap:10px;font-size:14px;padding:6px 0;border-bottom:1px solid var(--line)}
 .hist-t{font-family:var(--ff-m);color:var(--dust);flex:0 0 62px}
 .hist-c{flex:1}
-.hist-r{font-family:var(--ff-m);color:var(--dust);font-size:12px}
+.hist-r{font-family:var(--ff-m);color:var(--dust);font-size:14px}
 
 .skills-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:4px 14px}
-.sk{display:flex;justify-content:space-between;gap:8px;font-size:13px;padding:3px 0;border-bottom:1px dotted var(--line)}
+.sk{display:flex;justify-content:space-between;gap:8px;font-size:14px;padding:3px 0;border-bottom:1px dotted var(--line)}
 .sk-v{font-family:var(--ff-m);color:var(--amber);font-weight:700}
 .spec-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:4px 14px}
 
-.note{font-size:12px;color:var(--dust);line-height:1.45;background:var(--card);border-left:3px solid var(--accent-dim);padding:8px 11px;border-radius:0 var(--r) var(--r) 0;margin:10px 0}
+.note{font-size:14px;color:var(--dust);line-height:1.45;background:var(--card);border-left:3px solid var(--accent-dim);padding:8px 11px;border-radius:0 var(--r) var(--r) 0;margin:10px 0}
 .note.warn{border-left-color:var(--rust)}
 
 /* ---- printed sheet: a CSS recreation, no publisher artwork ---- */
@@ -550,6 +556,13 @@ body{margin:0;background:var(--panel);color:var(--ink);font-family:var(--ff-b);f
       S.rankIndex = rankIndexOf(S, f.career.starting_rank);
       S.current.log.push({ v: '--', t: 'Enlisted as ' + f.career.starting_rank });
     }
+    // "In your first term of military service one of your two skill increases MUST be
+    // RANGED COMBAT" (printed p32). It is compulsory, so the engine spends it rather
+    // than asking the player to make a choice that has only one legal answer.
+    if (S.current.firstMilitary && canRaiseSkill(S, 'Ranged Combat')) {
+      takeIncrease(S, 'Ranged Combat');
+      S.current.forcedIncrease = 'Ranged Combat';
+    }
     return S.current;
   }
 
@@ -580,8 +593,11 @@ body{margin:0;background:var(--panel);color:var(--ink);font-family:var(--ff-b);f
     S.current.increases.push(name);
     return true;
   }
+  // The compulsory first-term Ranged Combat step cannot be handed back -- undo stops
+  // at it rather than putting the player back into an illegal state.
   function undoIncrease(S) {
     if (!S.current || !S.current.increases.length) return false;
+    if (S.current.forcedIncrease && S.current.increases.length <= 1) return false;
     var name = S.current.increases.pop();
     lowerSkill(S, name);
     return true;
@@ -590,7 +606,11 @@ body{margin:0;background:var(--panel);color:var(--ink);font-family:var(--ff-b);f
   function increasesValid(S) {
     if (!S.current || S.current.increases.length !== 2) return false;
     if (S.current.group.type === 'military' && S.current.firstMilitary &&
-        S.current.increases.indexOf('Ranged Combat') < 0) return false;
+        S.current.increases.indexOf('Ranged Combat') < 0) {
+      // Only unsatisfiable if the skill is already capped, in which case the
+      // requirement cannot be met and is waived rather than dead-locking the term.
+      return !canRaiseSkill(S, 'Ranged Combat');
+    }
     return true;
   }
 
@@ -1259,25 +1279,23 @@ body{margin:0;background:var(--panel);color:var(--ink);font-family:var(--ff-b);f
       cur.log.map(function (l) { return rollLine(l.v, esc(l.t)); }).join('') +
       '<div class="panel-t">Training &mdash; ' + (2 - left) + ' / 2 steps taken</div>' +
       '<div class="note">Raise two skills one step each, or one skill two steps. A skill you have never had starts at D.' +
-      (cur.firstMilitary ? ' <b>This is your first term of military service, so one step must be Ranged Combat.</b>' : '') +
+      (cur.forcedIncrease ? ' <b>Your first term of military service requires Ranged Combat, so one step has already been placed there for you.</b>' : '') +
       (E.isNCO(S) && cur.group.type === 'military' ? ' As a Corporal or above you may always take Command.' : '') +
       '</div>' +
       '<div class="skills-list">' + pool.map(function (sk) {
         var taken = cur.increases.filter(function (x) { return x === sk; }).length;
         var can = E.canTakeIncrease(S, sk);
+        var locked = cur.forcedIncrease === sk;
         return '<div class="opt' + (taken ? ' on' : '') + (can || taken ? '' : ' disabled') +
           '" onclick="' + (can ? 'A.increase(\'' + esc(sk) + '\')' : '') + '">' +
           '<div class="opt-box">' + (taken ? (taken > 1 ? taken : '&#10003;') : '') + '</div>' +
           '<div class="opt-n">' + esc(sk) + ' <span class="hist-r">' + E.skillLevel(S, sk) +
-          (taken ? ' &rarr; ' + E.skillLevel(S, sk) : '') + '</span></div></div>';
+          (locked ? ' &middot; required' : '') + '</span></div></div>';
       }).join('') + '</div></div>';
     var ready = E.increasesValid(S);
     h += '<div class="btn-row"><button class="btn ghost"' + (cur.increases.length ? '' : ' disabled') +
       ' onclick="A.undoIncrease()">Undo</button>' +
-      '<button class="btn"' + (ready ? '' : ' disabled') + ' onclick="A.toPromotion()">Roll for promotion &rarr;</button></div>';
-    if (!ready && cur.increases.length === 2 && cur.firstMilitary) {
-      h += '<div class="note warn">Your first military term must include Ranged Combat.</div>';
-    }
+      '<button class="btn"' + (ready ? '' : ' disabled') + ' onclick="A.toPromotion()">Promotion check &rarr;</button></div>';
     return h;
   }
 
@@ -1286,7 +1304,8 @@ body{margin:0;background:var(--panel);color:var(--ink);font-family:var(--ff-b);f
     var h = '<div class="panel"><div class="term-hd"><div class="term-n">' + esc(cur.career.name) +
       '</div><div class="term-age">term ' + cur.termNo + '</div></div>';
     if (!cur.promotionRoll) {
-      h += '<div class="note">Make one unmodified skill roll with a skill you raised this term. You roll the skill die and its attribute die; a 6 or better on either is a success. You cannot push this roll.</div>' +
+      h += '<div class="panel-t">Choose the skill you are assessed on</div>' +
+        '<div class="note">Pick one of the skills you raised this term and roll it: the skill die plus its attribute die, 6 or better on either succeeds. Success is a promotion &mdash; a new specialty, and in the services a rank and a step of coolness under fire. You cannot push this roll.</div>' +
         cur.increases.filter(function (v, i, a) { return a.indexOf(v) === i; }).map(function (sk) {
           var at = E.skillAttr(S, sk);
           return '<div class="opt" onclick="A.promote(\'' + esc(sk) + '\')"><div class="opt-box"></div><div>' +
@@ -1296,8 +1315,11 @@ body{margin:0;background:var(--panel);color:var(--ink);font-family:var(--ff-b);f
       return h + '</div>';
     }
     var pr = cur.promotionRoll;
+    h += '<div class="verdict ' + (pr.ok ? 'good' : 'bad') + '">' +
+      (pr.ok ? 'PROMOTED' : 'PASSED OVER') + '</div>';
     h += rollLine(diceHTML(pr.rolls), esc(pr.skill) + ' (' + pr.attr + '): ' +
-      (pr.ok ? pr.successes + ' success' + (pr.successes === 1 ? '' : 'es') + ' &mdash; promoted' : 'no successes &mdash; passed over'),
+      (pr.ok ? pr.successes + ' success' + (pr.successes === 1 ? '' : 'es') + ', 6 or better needed'
+             : 'no die reached 6'),
       pr.ok ? 'good' : 'bad');
     // The duplicate case is tested FIRST: it also has no specialtyGained yet, so the
     // roll-a-table branch below would otherwise swallow it and offer another roll.
@@ -1855,7 +1877,6 @@ body{margin:0;background:var(--panel);color:var(--ink);font-family:var(--ff-b);f
       }
       E.beginTerm(S, choice.career.key, area);
       var pool = E.termSkillOptions(S, S.current.career, S.current.group);
-      if (S.current.firstMilitary) E.takeIncrease(S, 'Ranged Combat');
       var ig = 0;
       while (E.increasesRemaining(S) > 0 && ig++ < 30) {
         var free = pool.filter(function (p) { return E.canTakeIncrease(S, p); });

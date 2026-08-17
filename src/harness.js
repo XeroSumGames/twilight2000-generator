@@ -114,7 +114,13 @@ for (var run = 0; run < RUNS; run++) {
 
     // step 6: two increases
     var pool = E.termSkillOptions(S, cur.career, cur.group);
-    if (cur.firstMilitary) E.takeIncrease(S, 'Ranged Combat');
+    // beginTerm now spends the compulsory Ranged Combat step itself
+    if (cur.firstMilitary) {
+      ok(cur.increases.indexOf('Ranged Combat') >= 0,
+         'seed ' + seed + ': first military term did not auto-take Ranged Combat');
+      ok(cur.increases.length === 1,
+         'seed ' + seed + ': auto-take spent ' + cur.increases.length + ' steps, expected 1');
+    }
     var ig = 0;
     while (E.increasesRemaining(S) > 0 && ig++ < 40) {
       var sk = pick(S.rng, pool);

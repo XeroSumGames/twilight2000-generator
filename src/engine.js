@@ -278,6 +278,13 @@
       S.rankIndex = rankIndexOf(S, f.career.starting_rank);
       S.current.log.push({ v: '--', t: 'Enlisted as ' + f.career.starting_rank });
     }
+    // "In your first term of military service one of your two skill increases MUST be
+    // RANGED COMBAT" (printed p32). It is compulsory, so the engine spends it rather
+    // than asking the player to make a choice that has only one legal answer.
+    if (S.current.firstMilitary && canRaiseSkill(S, 'Ranged Combat')) {
+      takeIncrease(S, 'Ranged Combat');
+      S.current.forcedIncrease = 'Ranged Combat';
+    }
     return S.current;
   }
 
@@ -308,8 +315,11 @@
     S.current.increases.push(name);
     return true;
   }
+  // The compulsory first-term Ranged Combat step cannot be handed back -- undo stops
+  // at it rather than putting the player back into an illegal state.
   function undoIncrease(S) {
     if (!S.current || !S.current.increases.length) return false;
+    if (S.current.forcedIncrease && S.current.increases.length <= 1) return false;
     var name = S.current.increases.pop();
     lowerSkill(S, name);
     return true;
@@ -318,7 +328,11 @@
   function increasesValid(S) {
     if (!S.current || S.current.increases.length !== 2) return false;
     if (S.current.group.type === 'military' && S.current.firstMilitary &&
-        S.current.increases.indexOf('Ranged Combat') < 0) return false;
+        S.current.increases.indexOf('Ranged Combat') < 0) {
+      // Only unsatisfiable if the skill is already capped, in which case the
+      // requirement cannot be met and is waived rather than dead-locking the term.
+      return !canRaiseSkill(S, 'Ranged Combat');
+    }
     return true;
   }
 

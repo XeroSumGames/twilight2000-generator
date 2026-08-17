@@ -424,25 +424,23 @@
       cur.log.map(function (l) { return rollLine(l.v, esc(l.t)); }).join('') +
       '<div class="panel-t">Training &mdash; ' + (2 - left) + ' / 2 steps taken</div>' +
       '<div class="note">Raise two skills one step each, or one skill two steps. A skill you have never had starts at D.' +
-      (cur.firstMilitary ? ' <b>This is your first term of military service, so one step must be Ranged Combat.</b>' : '') +
+      (cur.forcedIncrease ? ' <b>Your first term of military service requires Ranged Combat, so one step has already been placed there for you.</b>' : '') +
       (E.isNCO(S) && cur.group.type === 'military' ? ' As a Corporal or above you may always take Command.' : '') +
       '</div>' +
       '<div class="skills-list">' + pool.map(function (sk) {
         var taken = cur.increases.filter(function (x) { return x === sk; }).length;
         var can = E.canTakeIncrease(S, sk);
+        var locked = cur.forcedIncrease === sk;
         return '<div class="opt' + (taken ? ' on' : '') + (can || taken ? '' : ' disabled') +
           '" onclick="' + (can ? 'A.increase(\'' + esc(sk) + '\')' : '') + '">' +
           '<div class="opt-box">' + (taken ? (taken > 1 ? taken : '&#10003;') : '') + '</div>' +
           '<div class="opt-n">' + esc(sk) + ' <span class="hist-r">' + E.skillLevel(S, sk) +
-          (taken ? ' &rarr; ' + E.skillLevel(S, sk) : '') + '</span></div></div>';
+          (locked ? ' &middot; required' : '') + '</span></div></div>';
       }).join('') + '</div></div>';
     var ready = E.increasesValid(S);
     h += '<div class="btn-row"><button class="btn ghost"' + (cur.increases.length ? '' : ' disabled') +
       ' onclick="A.undoIncrease()">Undo</button>' +
-      '<button class="btn"' + (ready ? '' : ' disabled') + ' onclick="A.toPromotion()">Roll for promotion &rarr;</button></div>';
-    if (!ready && cur.increases.length === 2 && cur.firstMilitary) {
-      h += '<div class="note warn">Your first military term must include Ranged Combat.</div>';
-    }
+      '<button class="btn"' + (ready ? '' : ' disabled') + ' onclick="A.toPromotion()">Promotion check &rarr;</button></div>';
     return h;
   }
 
@@ -451,7 +449,8 @@
     var h = '<div class="panel"><div class="term-hd"><div class="term-n">' + esc(cur.career.name) +
       '</div><div class="term-age">term ' + cur.termNo + '</div></div>';
     if (!cur.promotionRoll) {
-      h += '<div class="note">Make one unmodified skill roll with a skill you raised this term. You roll the skill die and its attribute die; a 6 or better on either is a success. You cannot push this roll.</div>' +
+      h += '<div class="panel-t">Choose the skill you are assessed on</div>' +
+        '<div class="note">Pick one of the skills you raised this term and roll it: the skill die plus its attribute die, 6 or better on either succeeds. Success is a promotion &mdash; a new specialty, and in the services a rank and a step of coolness under fire. You cannot push this roll.</div>' +
         cur.increases.filter(function (v, i, a) { return a.indexOf(v) === i; }).map(function (sk) {
           var at = E.skillAttr(S, sk);
           return '<div class="opt" onclick="A.promote(\'' + esc(sk) + '\')"><div class="opt-box"></div><div>' +
@@ -461,8 +460,11 @@
       return h + '</div>';
     }
     var pr = cur.promotionRoll;
+    h += '<div class="verdict ' + (pr.ok ? 'good' : 'bad') + '">' +
+      (pr.ok ? 'PROMOTED' : 'PASSED OVER') + '</div>';
     h += rollLine(diceHTML(pr.rolls), esc(pr.skill) + ' (' + pr.attr + '): ' +
-      (pr.ok ? pr.successes + ' success' + (pr.successes === 1 ? '' : 'es') + ' &mdash; promoted' : 'no successes &mdash; passed over'),
+      (pr.ok ? pr.successes + ' success' + (pr.successes === 1 ? '' : 'es') + ', 6 or better needed'
+             : 'no die reached 6'),
       pr.ok ? 'good' : 'bad');
     // The duplicate case is tested FIRST: it also has no specialtyGained yet, so the
     // roll-a-table branch below would otherwise swallow it and offer another roll.
@@ -1020,7 +1022,6 @@
       }
       E.beginTerm(S, choice.career.key, area);
       var pool = E.termSkillOptions(S, S.current.career, S.current.group);
-      if (S.current.firstMilitary) E.takeIncrease(S, 'Ranged Combat');
       var ig = 0;
       while (E.increasesRemaining(S) > 0 && ig++ < 30) {
         var free = pool.filter(function (p) { return E.canTakeIncrease(S, p); });
