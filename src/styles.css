@@ -7,7 +7,7 @@
 :root{
   --void:#0e0e10; --panel:#e9e6db; --surface:#f6f4ec; --card:#dcd8c8; --card-ho:#d2cdba;
   /* --dust is the secondary-text token (blurbs, option descriptions, notes) */
-  --ink:#16170f; --dim:#6f6d5c; --dust:#4f4e42; --steel:#3a3a30; --moon:#1a1a14;
+  --ink:#16170f; --dim:#5c5a4c; --dust:#3d3c33; --steel:#3a3a30; --moon:#1a1a14;
   --rust:#8f3d24; --amber:#a8761f; --line:#c2bda9; --accent:#4a5a35; --accent-dim:#c6ccb4;
   --ff-d:Georgia,'Times New Roman',serif;
   --ff-b:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
@@ -16,7 +16,7 @@
 }
 :root[data-theme="dark"]{
   --void:#000; --panel:#15160f; --surface:#1d1f16; --card:#25281c; --card-ho:#2e3123;
-  --ink:#eceadc; --dim:#7e7d6c; --dust:#b4b2a0; --steel:#cbc9b6; --moon:#eceadc;
+  --ink:#eceadc; --dim:#989686; --dust:#dbd8c6; --steel:#cbc9b6; --moon:#eceadc;
   --rust:#d4674a; --amber:#d9a441; --line:#353829; --accent:#8fa568; --accent-dim:#3f4a2c;
 }
 *{box-sizing:border-box}
