@@ -4,6 +4,9 @@
   "_transcribed": "2026-08-16",
   "_method": "LIFE PATH (printed p31). The archetype method (printed p20-30) is NOT implemented.",
 
+  "_vtt_note": "Identifies this game to the VTT's character import. Read from DATA rather than hardcoded, matching the Traveller-family engines.",
+  "vtt": { "system": "twilight-2000-4e", "generator": "twilight2000-generator" },
+
   "attributes": {
     "order": ["STR", "AGL", "INT", "EMP"],
     "names": {

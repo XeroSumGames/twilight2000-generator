@@ -22,7 +22,7 @@ var DATA = {
 var RUNS = parseInt(process.argv[2], 10) || 2000;
 var checks = 0, failures = [];
 var COV = { careers: {}, promotions: 0, dupSpecialty: 0, ageEffects: 0, prison: 0,
-            draft: 0, militia: 0, columns: {}, termCounts: {}, officerAreas: {} };
+            draft: 0, militia: 0, columns: {}, termCounts: {}, officerAreas: {}, exports: 0, gearItems: 0 };
 function ok(cond, msg) {
   checks++;
   if (!cond) failures.push(msg);
@@ -249,6 +249,42 @@ for (var run = 0; run < RUNS; run++) {
   });
   ok(E.rank(E.unitMorale(S)) >= 0, 'seed ' + seed + ': bad unit morale');
 
+  // ---- the VTT envelope must be complete and survive a JSON round trip ----
+  // exportCharacter lives in the engine precisely so this runs headlessly.
+  var x = E.exportCharacter(S);
+  ok(x.schemaVersion === 1, 'seed ' + seed + ': schemaVersion ' + x.schemaVersion);
+  ok(x.system === DATA.core.vtt.system, 'seed ' + seed + ': system ' + x.system + ' does not match core-rules vtt id');
+  ok(x.generator === DATA.core.vtt.generator, 'seed ' + seed + ': generator ' + x.generator);
+  ok(!!x.generatedAt && !!x.character, 'seed ' + seed + ': envelope missing generatedAt/character');
+  E.ATTRS.forEach(function (k) {
+    ok(x.character.attributes[k].level === S.attrs[k], 'seed ' + seed + ': exported ' + k + ' disagrees');
+    ok(x.character.attributes[k].die === E.dieSize(S.attrs[k]),
+       'seed ' + seed + ': exported ' + k + ' die disagrees with its grade');
+  });
+  ok(x.character.skills.length === Object.keys(S.skills).length, 'seed ' + seed + ': export dropped skills');
+  ok(x.character.skills.every(function (sk) { return sk.die === E.dieSize(sk.level) && !!sk.attr; }),
+     'seed ' + seed + ': a skill exported with a die or attribute that disagrees');
+  ok(x.character.careerHistory.length === S.terms.length, 'seed ' + seed + ': export dropped career history');
+  ok(x.character.specialties.length === S.specialties.length, 'seed ' + seed + ': export dropped specialties');
+  ok(x.character.capacity.hit === hit && x.character.capacity.stress === stress,
+     'seed ' + seed + ': exported capacities disagree');
+  ok(x.character.cuf.level === S.cuf && x.character.cuf.die === E.dieSize(S.cuf), 'seed ' + seed + ': exported CUF disagrees');
+  // Gear only exists as gearSource() filtered by the ticked boxes, so tick them the way
+  // the app's randomiser does -- otherwise this assertion passes on two empty lists.
+  S.gearPicks = S.gearPicks || {};   // the app creates this; the engine only reads it
+  gs.gear.forEach(function (g, i) { S.gearPicks[i] = (i % 3 !== 0); });
+  var xg = E.exportCharacter(S).character.gear;
+  var wanted = gs.gear.filter(function (g, i) { return i % 3 !== 0; });
+  ok(xg.source === gs.name, 'seed ' + seed + ': exported gear source ' + xg.source + ' != ' + gs.name);
+  ok(xg.items.length === wanted.length && xg.items.every(function (g, i) { return g === wanted[i]; }),
+     'seed ' + seed + ': exported gear does not match the ticked boxes');
+  ok(xg.items.length > 0, 'seed ' + seed + ': gear export produced nothing to carry');
+  COV.gearItems += xg.items.length;
+  var round = JSON.parse(JSON.stringify(x));
+  ok(round.character.seed === S.seed && round.character.supplies.rations === S.rations,
+     'seed ' + seed + ': export does not survive a JSON round trip');
+  COV.exports++;
+
   var tc = S.terms.length;
   COV.termCounts[tc] = (COV.termCounts[tc] || 0) + 1;
   invariants(S, 'final', seed);
@@ -264,6 +300,7 @@ console.log('  drafted at war    : ' + COV.draft + '   militia auto-war: ' + COV
 console.log('  officer areas     : ' + JSON.stringify(COV.officerAreas));
 console.log('  At War columns    : ' + JSON.stringify(COV.columns));
 console.log('  terms per life    : ' + JSON.stringify(COV.termCounts));
+console.log('  VTT envelopes     : ' + COV.exports + ' validated, ' + COV.gearItems + ' gear items exported');
 console.log(checks + ' checks, ' + failures.length + ' failed');
 if (failures.length) {
   var shown = {};

@@ -541,7 +541,79 @@
     return { rations: S.rations, water: S.water, ammo: S.ammo, rads: S.rads };
   }
 
+  // ---------- export for the VTT ----------
+  // Envelope fixed by tasks/mothership-vtt-architecture.md section 7: a shared OUTER
+  // envelope with a per-game payload underneath. The ids come from DATA rather than
+  // being hardcoded, matching the Traveller-family engines.
+  // Attributes and skills carry BOTH the letter grade and its die, because a consumer
+  // that has only the letter cannot roll anything without also knowing T2K's ladder.
+  var SCHEMA_VERSION = 1;
+  function exportCharacter(S) {
+    var meta = (S.DATA.core && S.DATA.core.vtt) || {};
+    return {
+      schemaVersion: SCHEMA_VERSION,
+      system: meta.system || 'twilight-2000-4e',
+      generator: meta.generator || 'twilight2000-generator',
+      generatedAt: new Date().toISOString(),
+      character: {
+        name: S.name || '',
+        nickname: S.nickname || '',
+        nationality: S.nationality || '',
+        localMilitia: !!S.localMilitia,
+        age: S.age,
+        rank: rankName(S),
+        attributes: graded(ATTRS, function (k) { return S.attrs[k]; }),
+        skills: Object.keys(S.skills).sort().map(function (n) {
+          return { name: n, level: S.skills[n], die: dieSize(S.skills[n]), attr: skillAttr(S, n) };
+        }),
+        specialties: S.specialties.slice(),
+        cuf: { level: S.cuf, die: dieSize(S.cuf) },
+        unitMorale: unitMorale(S),
+        capacity: { hit: hitCapacity(S), stress: stressCapacity(S) },
+        childhood: S.childhood || null,
+        careerHistory: S.terms.map(function (t) {
+          return {
+            term: t.termNo || null,
+            career: t.career ? t.career.name : null,
+            group: t.group ? t.group.name : null,
+            officerArea: t.officerArea || null,
+            promoted: !!t.promoted,
+            specialtyGained: t.specialtyGained || null,
+            startAge: t.startAge, years: t.years,
+            ageEffect: t.ageEffect || null
+          };
+        }),
+        war: { reached: !!S.war, atWarPlayed: !!S.atWar },
+        gear: gearCarried(S),
+        supplies: { rations: S.rations, water: S.water, ammo: S.ammo, rads: S.rads },
+        profile: {
+          moralCode: S.moralCode || '', bigDream: S.bigDream || '',
+          buddy: S.buddy || '', howMet: S.howMet || '', appearance: S.appearance || ''
+        },
+        seed: S.seed
+      }
+    };
+  }
+  // S.gear is dead state -- nothing ever writes it. Starting gear is really the
+  // gearSource list filtered by the boxes ticked in S.gearPicks, which is exactly
+  // what the printed sheet renders, so export that and name where it came from.
+  function gearCarried(S) {
+    var gs = gearSource(S);
+    if (!gs) return { source: null, items: [] };
+    var picks = S.gearPicks || {};
+    return {
+      source: gs.name,
+      items: gs.gear.filter(function (g, i) { return !!picks[i]; })
+    };
+  }
+  function graded(keys, get) {
+    var out = {};
+    for (var i = 0; i < keys.length; i++) out[keys[i]] = { level: get(keys[i]), die: dieSize(get(keys[i])) };
+    return out;
+  }
+
   var API = {
+    exportCharacter: exportCharacter, SCHEMA_VERSION: SCHEMA_VERSION,
     RNG: RNG, ATTRS: ATTRS, RANKED: RANKED,
     rank: rank, levelAt: levelAt, dieSize: dieSize, atLeast: atLeast,
     stepUp: stepUp, stepDown: stepDown,

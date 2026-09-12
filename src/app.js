@@ -665,6 +665,7 @@
         '<div class="note">Plus ' + ration(S.rations, 'ration') + ' of food, ' + S.water + ' of water, ' + ration(S.ammo, 'round') + ' as currency.</div></div>';
     }
     h += '<div class="btn-row"><button class="btn ghost" onclick="A.restart()">Start over</button>' +
+      '<button class="btn ghost" onclick="A.exportJson()">Download character JSON</button>' +
       '<button class="btn" onclick="window.print()">Print sheet</button></div>';
     return h;
   }
@@ -805,6 +806,19 @@
       '<button class="btn ghost" onclick="A.askUnlock(\'' + p + '\')">Amend the record&hellip;</button></div></div>';
   }
   A.restart = function () { fresh(); lastView = null; render(); };
+
+  A.exportJson = function () {
+    var doc = E.exportCharacter(S);
+    var blob = new Blob([JSON.stringify(doc, null, 2)], { type: 'application/json' });
+    var safe = (S.name || 't2k-character').replace(/[^A-Za-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '');
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = (safe || 't2k-character') + '.t2k.json';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+  };
+
   A.__peek = function () { return S; };
 
   function rollName() {
