@@ -211,16 +211,24 @@ body{margin:0;background:var(--panel);color:var(--ink);font-family:var(--ff-b);f
   .main{max-width:none;margin:0;padding:0}
   #printsheet{display:block!important}
   /* Tightened so a full life path plus the footer lands on ONE page -- at the screen
-     paddings the disclaimer alone spilled onto a second sheet. */
-  .ps{width:auto;min-height:0;padding:.3in}
-  .ps-box{padding:6px 9px;margin-bottom:6px}
-  .ps-band{font-size:8.5pt;padding:2px 7px}
-  .ps-top{margin-bottom:6px}
+     paddings the disclaimer alone spilled onto a second sheet.
+     Tightened AGAIN 2026-09-11, because the first pass left only 3px of headroom and a
+     heavy character still spilled. Measured under print media rather than guessed: the
+     rules' true ceiling -- 10 terms, 14 specialties, every gear box ticked, all five
+     personal fields full -- came to 1093px against the 1056px letter page, 37px over.
+     The type sizes are untouched; the space comes from the gaps between blocks, which
+     buys about 60px and leaves real headroom instead of a hairline. */
+  .ps{width:auto;min-height:0;padding:.22in}
+  .ps-box{padding:5px 9px;margin-bottom:3px}
+  .ps-band{font-size:8.5pt;padding:1px 7px}
+  .ps-top{margin-bottom:4px}
   .ps-title{font-size:22pt}
-  .ps-foot{margin-top:5px;font-size:6.5pt}
+  .ps-foot{margin-top:3px;font-size:6.5pt}
   .ps-sk,.ps-sp,.ps-gear{font-size:7.5pt}
   .ps-hist{font-size:7.5pt}
-  .ps-hist th,.ps-hist td{padding:1px 4px}
+  /* the life path is the tallest block on the sheet -- eleven rows at the ceiling -- so a
+     single pixel per row is the cheapest 22px on the page and the least visible */
+  .ps-hist th,.ps-hist td{padding:0 4px}
   .ps-f{padding:1px 0}
   .ps-at div.v{font-size:14pt;padding:1px 0}
 }
