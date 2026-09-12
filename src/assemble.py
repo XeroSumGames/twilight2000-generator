@@ -78,7 +78,7 @@ HTML = """<!doctype html>
     <div class="sidebar no-print" id="sidebar"></div>
   </div>
 </div>
-<div class="footer no-print" style="text-align:center;padding:26px 16px;font-size:12px;color:#8d897c;line-height:1.6">
+<div class="footer no-print" style="text-align:center;padding:26px 16px;font-size:14px;color:#8d897c;line-height:1.6">
   <p class="seo-intro">A free, browser-based character generator for Twilight: 2000 4th Edition. It runs the complete life path: attributes over a baseline of C, childhood, military and civilian career terms with skill increases, promotion rolls, specialties, ageing and the war roll, then the At War term, hit and stress capacity, and starting gear.</p>
 
   <b>Twilight: 2000 -- Character Generator.</b> An unofficial fan tool.<br>
